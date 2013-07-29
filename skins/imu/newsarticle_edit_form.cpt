@@ -1,0 +1,296 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="elevateIT">
+
+      
+  <metal:calendar fill-slot="javascript_head_slot">
+    <!-- ECMAScript calendar -->
+    <style type="text/css" media="all"
+        tal:content="string:@import url($portal_url/jscalendar/calendar-system.css);"></style>
+    <script type="text/javascript"
+        tal:attributes="src string:$portal_url/jscalendar/calendar_stripped.js"></script>
+    <script type="text/javascript" charset="iso-8859-1"
+        tal:condition="exists: portal/jscalendar/calendar-en.js"
+        tal:attributes="src string:$portal_url/jscalendar/calendar-en.js"></script>
+  </metal:calendar>
+ <body>
+
+  <div metal:fill-slot="main"
+       tal:define="rejection here/rejectAnonymous;
+       errors options/state/getErrors;
+       mdsheet python:catman.getSheet(here, 'mandatory_defaults');
+       edit_language request/edit_language|prefLang;
+       lang_name python:ltool.getNameForLanguageCode(edit_language);
+       itemtype python:here.getTypeInfo().Title();
+       editor python:member.getProperty('wysiwyg_editor','None');
+       wysiwyg python:test(editor and editor!='None', editor, 'None');
+       global zpt_error string:;
+       text python:request.get('text', getattr(here,'EditableBody',''));"
+       i18n:domain="elevateIT">
+
+
+   <h1><span tal:omit-tag="" i18n:translate="heading_edit_item">
+    Edit
+    <span i18n:name="itemtype" i18n:domain="elevateIT">
+     <span tal:content="itemtype" i18n:translate=""
+     tal:omit-tag="">Item type</span>
+    </span></span> (<span i18n:domain="dynamic_motherlanguages"
+                        i18n:translate="" tal:content="lang_name" />)
+   </h1>
+   
+   <p i18n:translate="description_newsarticle_edit" i18n:domain="elevateIT">
+    Fill in the details for this <span i18n:name="itemtype">
+              <span tal:content="itemtype" 
+                    tal:omit-tag="">Item type</span> 
+        </span>.
+    </p>  
+   
+   <form name="edit_form"
+         action="."
+         method="post"
+         enctype="multipart/form-data"
+         tal:attributes="action string:${here/getId}/${template/getId}" >
+
+    <fieldset>
+
+     <legend i18n:domain="elevateIT" i18n:translate="legend_newsarticle_details">Newsarticle Details</legend>
+
+     <div class="field"
+          tal:condition="here/show_visible_ids"
+          tal:define="error errors/id | nothing;
+          id python:request.get('id', test(here.show_id(),here.getId(),''));"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="id" i18n:translate="label_short_name">Short Name</label>
+
+      <div class="formHelp" i18n:domain="elevateIT" i18n:translate="help_shortname">
+       Should not contain spaces, underscores or mixed case.
+       Short Name is part of the document's web address.
+      </div>
+
+      <div i18n:translate="" tal:content="error">Validation error output</div>
+
+      <input type="text"
+             id="id"
+             name="id"
+             value=""
+             size="40"
+             tabindex=""
+             tal:attributes="value id;
+             tabindex tabindex/next;"
+             />
+
+     </div>
+
+     <input type="hidden"
+            name="id"
+            tal:condition="not:here/show_visible_ids"
+            tal:attributes="value python:request.get('id', here.getId())"
+            />
+            
+     <div class="field"
+          tal:define="error errors/title|nothing;
+          Title request/title | python:here.editableProp('title');"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="title" i18n:translate="label_title">Title</label> (<span 
+                    tal:replace="edit_language" />)
+
+        <span class="fieldRequired" title="Required"
+              i18n:attributes="title"
+              i18n:translate="label_required">(Required)</span>
+
+      <div i18n:translate="" tal:content="error">Validation error output</div>
+
+      <input type="text"
+             id="title"
+             name="title"
+             value=""
+             size="80"
+             tabindex=""
+             tal:attributes="value Title;
+             tabindex tabindex/next;"
+             />
+
+     </div>
+     
+     <div class="field"
+          tal:define="error errors/description|nothing;
+          description request/description | python:here.editableProp('description');"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="description" i18n:translate="label_description">Summary</label> (<span 
+                    tal:replace="edit_language" />)
+
+      <span class="fieldRequired" title="Required"
+            tal:condition="python:mdsheet.hasProperty('description')"
+            i18n:attributes="title"
+            i18n:translate="label_required">(Required)</span>
+            
+      <div class="formHelp" i18n:translate="help_newsarticle_description">
+       Enter the Summary of the News Article. This will shown in every news listing. 
+      </div>
+
+      <div i18n:translate="" tal:content="error">Validation error output</div>
+
+      <textarea cols="80" 
+                rows="5" 
+                name="description:text"
+                id="description"
+                tal:content="description"
+                tal:attributes="tabindex tabindex/next;"
+                >Description </textarea>
+
+     </div>
+     
+     <tal:block condition="python:here.text_format=='zpt'">
+        <tal:block define="text text;
+                   zpt_errors python:utiltool.validatePageTemplate(here, text);
+                   global zpt_error python:'\n'.join(zpt_errors)" />
+    </tal:block>
+     
+     <div class="field" tal:define="error errors/text|zpt_error|nothing;
+          cooked_text python:request.get('text',getattr(here,'CookedBody',getattr(here,'cooked_text','')));
+          forced_format string:html;"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+
+      <label for="text" i18n:translate="label_body_text">Body text</label> (<span 
+                    tal:replace="edit_language" />)
+                    
+      <div tal:content="error" i18n:translate="">Validation error output</div>
+
+
+      <tal:editor define="inputname  string:text;
+                  formname   string:edit_form;
+                  inputvalue text;
+                  tabindex tabindex/next;">
+       <div metal:use-macro="here/wysiwyg_support/macros/wysiwygEditorBox">
+        The WYSIWYG code
+       </div>
+      </tal:editor>
+      
+      <div metal:use-macro="here/wysiwyg_support/macros/textFormatSelector">
+      Format box, if needed    
+      </div>
+     </div>
+     
+     <div class="field"
+          tal:define="error errors/file|nothing;"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="file" i18n:translate="label_upload_contents_optional">Upload contents (optional)</label>
+
+      <div class="formHelp" i18n:translate="help_upload_text">
+       Uploaded files will replace the body text entered above.
+      </div>
+
+      <div i18n:translate="" tal:content="error">Validation error output</div>
+
+      <input type="file"
+             id="file"
+             name="file"
+             size="30"
+             tabindex=""
+             value=""
+             tal:attributes="tabindex tabindex/next"
+             />
+     </div>
+     
+     <div class="field">
+         <input type="checkbox"
+                id="translation_complete"
+                name="translation_complete"
+                /> <label for="translation_complete" i18n:translate="lable_translation_complete">Translation complete</label> (<span 
+                    tal:replace="edit_language" />)
+         
+         <div class="formHelp" i18n:translate="help_translation_complete">
+            If you check this box, this language version will be marked as completely translated. Every change to 
+            the document without checking here will set the translation status to incomplete again.</div>
+     </div>
+     
+     <div class="field"
+          tal:define="error errors/effective_date|nothing;
+          inputname  string:effective_date;
+          formname   string:edit_form;
+          longformat string:1;
+          val python:test(not error , request.get('effective_date', ''), '');
+          inputvalue python:test(val!='', val, here.EffectiveDate());
+          tabindex tabindex/next;"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="effective_date" i18n:translate="label_effective_date">Effective Date</label>
+
+      <div class="formHelp" i18n:translate="help_effective_date">
+       The date when the item will be visible when it's published. This way, you can 
+       publish a item in advance, but it will not be visible before this date.
+      </div>
+
+      <div i18n:translate="" tal:content="error">Validation error output</div>
+
+      <div metal:use-macro="here/calendar_slot/macros/calendarDatePickerBox" i18n:translate="calender_hopefully">
+        a calendar, hopefully
+      </div>
+     </div>
+     
+     <div class="field"
+          tal:define="error errors/expiration_date|nothing;
+          inputname  string:expiration_date;
+          formname   string:edit_form;
+          longformat string:1;
+          val python:test(not error , request.get('expiration_date', ''), '');
+          inputvalue python:test(val!='', val, here.ExpirationDate());
+          tabindex tabindex/next;"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="expiration_date" i18n:translate="label_expiration_date">Expiration Date</label>
+
+      <div class="formHelp" i18n:translate="help_expiration_date">
+       The date when the item expires. This will automatically make the item
+       invisible for others at the given date.
+      </div>
+
+      <div i18n:translate="" tal:content="error">Validation error output</div>
+
+      <div metal:use-macro="here/calendar_slot/macros/calendarDatePickerBox">
+        a calendar, hopefully
+      </div>
+      
+     </div>
+     
+     <div class="formControls"
+          tal:define="process_creation request/process_creation|nothing;">
+      <input class="context"
+             tabindex=""
+             type="submit"
+             name="form.button.Save"
+             value="Save"
+             i18n:domain="plone"
+             i18n:attributes="value"
+             tal:attributes="tabindex tabindex/next;" />
+
+      <input class="standalone"
+             tabindex=""
+             type="submit"
+             name="form.button.Cancel"
+             value="Cancel"
+             i18n:domain="plone"
+             i18n:attributes="value"
+             tal:attributes="tabindex tabindex/next;" />
+
+     </div>
+    </fieldset>
+
+    <input type="hidden" name="edit_language" value="1" tal:attributes="value edit_language" />
+    <input type="hidden" name="form.submitted" value="1" />
+
+   </form>
+    
+   <metal:attachments use-macro="here/attachmentBox/macros/attachmentBox" />
+    
+  </div>
+
+ </body>
+</html>
+

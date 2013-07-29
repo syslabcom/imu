@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+<body>
+
+
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+            tal:define="text here/Text | here/text ;
+            itemtype python:here.getTypeInfo().Title();
+            len_text python:len(text);
+            cinfo python:here.getFirstParent(city=1);
+            imu_publisher here/imu_publisher|string:;
+            imu_in here/imu_in|string:;
+            series here/series|string:;
+            number here/number|string:;
+            imu_author here/imu_author|string:;
+            company here/company|string:;
+            location here/location|string:;
+            year here/year|string:;
+            isbn here/isbn|string:;
+            price here/price|string:;
+            source here/source|string:;
+            scope here/scope|string:;
+            di here/getDefaultImage|string:;
+            elems python:[x for x in here.getFolderListingFolderContents() if x.getId() != di]"
+            class="newsView">
+
+
+    <div metal:use-macro="here/content_languagechooser/macros/language_chooser_view" />
+
+    <div class="headline"><span tal:omit-tag="" i18n:translate="" tal:content="itemtype" /> <span tal:replace="python:cinfo[0]" /></div>
+
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+
+    <tal:block tal:define="defimage python:getattr(here, di, '')"
+               tal:condition="defimage/id" tal:on-error="nothing">
+        <div class="image" tal:define="imgtitle defimage/title_or_id|nothing;
+             imgwidth defimage/width|string:auto"
+             tal:attributes="style python:'width:'+str(imgwidth)+'px'">
+
+            <img alt="" src="folder.gif"
+                 tal:attributes="src python:defimage.absolute_url();
+                 title imgtitle;
+                 alt imgtitle" />
+            <div class="info" tal:content="defimage/Title|string:"></div>
+        </div>
+
+    </tal:block>
+    <h1 tal:content="here/Title|here/title_or_id" class="documentFirstHeading">
+      Title or id
+    </h1>
+
+    <p class="intro"
+       tal:condition="here/Description|nothing"
+       tal:content="structure here/Description|nothing">description
+    </p>
+
+    <table cellpadding="1" cellspacing="0" border="0"
+       summary="Layout table"
+       i18n:attributes="summary"
+       class="infotable">
+       <tr tal:condition="imu_author">
+           <th><span tal:omit-tag="" i18n:translate="label_imu_author">Author(s)</span>:</th>
+           <td width="90%" tal:content="structure imu_author" />
+       </tr>
+       <tr tal:condition="imu_in">
+           <th><span tal:omit-tag="" i18n:translate="label_imu_in">In</span>:</th>
+           <td width="90%" tal:content="structure imu_in" />
+       </tr>
+       <tr tal:condition="imu_publisher">
+           <th><span tal:omit-tag="" i18n:translate="label_imu_publisher">Publisher</span>:</th>
+           <td width="90%" tal:content="python:here.getMandants().get(imu_publisher, imu_publisher)" />
+       </tr>
+       <tr tal:condition="series">
+           <th><span tal:omit-tag="" i18n:translate="label_series">Series</span>:</th>
+           <td width="90%" tal:content="series" />
+       </tr>
+       <tr tal:condition="number">
+           <th><span tal:omit-tag="" i18n:translate="label_number">Number</span>:</th>
+           <td width="90%" tal:content="number" />
+       </tr>
+       <tr tal:condition="isbn">
+           <th><span tal:omit-tag="" i18n:translate="label_isbn">ISBN</span>:</th>
+           <td width="90%" tal:content="isbn" />
+       </tr>
+       <tr tal:condition="python:year or location or company">
+           <th><span tal:omit-tag="" i18n:translate="label_published">Published</span>:</th>
+           <!-- Schreibweisen -->
+           <tal:block tal:omit-tag="" tal:condition="python: year and location and company">
+           <td width="90%" tal:content="python: location + ': ' + company + ', ' + year" />
+           </tal:block>
+           <tal:block tal:omit-tag="" tal:condition="python: (not year) and (not location) and company">
+           <td width="90%" tal:content="python: company" />
+           </tal:block>
+           <tal:block tal:omit-tag="" tal:condition="python: year and location and (not company)">
+           <td width="90%" tal:content="python: location + ' ' + year" />
+           </tal:block>
+           <tal:block tal:omit-tag="" tal:condition="python: (year and (not location)) or (location and (not year))">
+           <td width="90%" tal:content="python: location + ' ' + year" />
+           </tal:block>
+           <!-- /Schreibweisen -->
+       </tr>
+       <tr tal:condition="scope">
+           <th><span tal:omit-tag="" i18n:translate="label_scope">Scope</span>:</th>
+           <td width="90%" tal:content="scope" />
+       </tr>
+       <tr tal:condition="price">
+           <th><span tal:omit-tag="" i18n:translate="label_price">Price</span>:</th>
+           <td width="90%" tal:content="python: price or '-'" />
+       </tr>
+       <tr tal:condition="source">
+           <th nowrap><span tal:omit-tag="" i18n:translate="label_source">Source</span>:</th>
+           <td width="90%" tal:content="source" />
+       </tr>
+    </table>
+
+    <div class="headline" tal:condition="len_text"><span tal:omit-tag="" i18n:translate="">Content</span>:</div>
+    <div id="bodyContent"
+         class="stx"
+         tal:condition="len_text"
+         tal:attributes="class python:test(here.text_format=='structured-text', 'stx', 'plain')">
+        <div tal:replace="structure python:here.CookedBody()"
+             tal:on-error="string:this page contains errors"  />
+    </div>
+
+    <metal:attachments use-macro="here/attachmentBox/macros/attachmentBox" />
+
+    <div metal:use-macro="here/document_byline/macros/byline">
+      Get the byline - contains details about author and modification date.
+    </div>
+    <div style="margin: 1.5em 0em" class="listingBar bottomBar">
+        <a style="float: left" href="javascript: history.back()"><span class="previous" tal:omit-tag="" i18n:translate="mp_back">Back</span></a>
+    </div>
+</div>
+
+</body>
+
+</html>
+
+

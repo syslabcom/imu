@@ -1,0 +1,14 @@
+[default]
+title=Edit Seminar
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators..Save=validate_title, validate_effective_expiry_date, validate_pagetemplate
+validators..Cancel=
+
+[actions]
+action.success..Save=traverse_to:string:seminar_edit
+action.success..Cancel=redirect_to_action:string:view
+action.failure=traverse_to:string:seminar_edit_form

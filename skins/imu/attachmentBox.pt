@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      i18n:domain="plone">
+
+<body>
+<metal:attachments metal:define-macro="attachmentBox">
+
+    <div class="attachmentBox"
+             tal:define="attachmentHolder nocall:attachmentHolder|nocall:here;
+             elems elems|python:attachmentHolder.getFolderListingFolderContents();
+             fs python:sequence.sort(elems, (('title_or_id', 'nocase', 'asc'), ))"
+             tal:condition="fs"
+             i18n:domain="elevateIT">
+     <div class="headline" i18n:translate="">More Information</div>
+     <metal:block  metal:define-macro="attachmentBoxListing">
+     <ul class="nostyle" tal:define="getObjSize nocall:here/getObjSize;
+         getIconFor nocall:putils/getIconFor">
+      <tal:block repeat="attachment fs">
+      <li tal:define="fstype attachment/getContentType | nothing;
+             ptype attachment/portal_type|attachment/meta_type|string:;
+             remote_url attachment/remote_url|string:;
+             icon python:getIconFor('attachmenticons', fstype, None);
+             icon python:test(icon, icon, attachment.getIcon(1))"> 
+        <img i18n:attributes="title" src="" alt="" title=""
+             height="16"
+             width="16"
+             tal:condition="icon"
+             tal:attributes="src string:$portal_url/$icon;
+                             title fstype;
+                             alt fstype" />&nbsp;<a style="padding-left: 0; background-image: none;background: transparent"
+          tal:attributes="href python:test(ptype=='Link', remote_url, attachment.absolute_url())"
+          tal:content="python:attachment.title_or_id()">File</a>&nbsp;&nbsp;<span tal:define="sz python:getObjSize(attachment)"
+          tal:condition="python:sz"
+          class="info">(<span i18n:translate=""></span><span tal:replace="sz" />)</span>
+          <tal:conversionservice define="cs nocall:here/portal_conversionservice;
+                           obj python:attachment;
+                           convs python:cs.getConvertersByInputType(obj.getProperty('content_type'))">
+            <tal:converters repeat="conv convs"><a href="convert"
+            tal:define="convid python:cs.getConverterInfo(conv)[2];
+            convname python:cs.getPrettyName(convid);
+            convimg python:cs.getImageInfo(convid, asObject=0)"
+            tal:attributes="href python:'convert?file='+obj.absolute_url()+chr(38)+'converter='+conv">
+            <img src="file_icon" height="16" alt="" title=""
+            tal:attributes="src python:cs.absolute_url()+'/'+test(convimg, convimg, 'default_icon');
+            alt convname;
+            title convname;" />&nbsp;<span tal:replace="convname" /></a>&nbsp;
+            </tal:converters>
+          </tal:conversionservice>
+          <div style="padding-left: 20px" class="discreet"
+            tal:condition="python:attachment.description" 
+            tal:content="structure python:attachment.description">description
+       </div>
+      </li>
+      </tal:block>
+     </ul>
+     </metal:block>
+     </div>
+    
+</metal:attachments>
+
+</body>
+
+</html>
+

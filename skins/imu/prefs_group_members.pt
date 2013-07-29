@@ -1,0 +1,276 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/prefs_main_template/macros/master"
+      i18n:domain="plone">
+
+<metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_border',1)" />
+
+<body>
+
+<div metal:fill-slot="prefs_configlet_main"
+     tal:define="errors python:request.get('errors', {});
+                portal_roles mtool/getPortalRoles;
+                Batch python:modules['ZTUtils'].Batch;
+                b_start python:request.get('b_start',0);
+		member_path python:here.portal_properties.site_properties.getProperty('ldap_member_path', None);
+		staff_path python:here.portal_properties.site_properties.getProperty('ldap_staff_path', None);
+                groupname request/groupname|nothing;
+                grouproles python:request.set('grouproles', []);
+                group python:gtool.getGroupById(groupname);
+		searchonly string:users;
+                to_utf8 python:here.portal_utilities.to_utf8;
+		takeaction string:prefs_group_members_edit;">
+
+    <tal:conditional condition="group">
+        <tal:defines define="dummy python:request.set('grouproles', group.getRoles())" />
+    </tal:conditional>
+
+<div class="configlet">
+
+<div class="documentEditable">
+
+    <!-- simulating views on the groups/user pages until we have real objects. -->
+    <ul class="contentViews">
+        <li class="selected">
+            <a href=""
+               tal:attributes="href string:${template/id}?groupname=${groupname}"
+               i18n:translate="label_group_members">Group Members</a>
+        </li>
+
+        <li class="">
+            <a href=""
+               tal:attributes="href string:prefs_group_details?groupname=${groupname}"
+               i18n:translate="label_group_properties">Group Properties</a>
+        </li>
+    </ul>
+    
+    <div class="contentActions">
+    &nbsp;
+    </div>        
+    <!-- End of tabs -->
+
+    <div class="documentContent"
+         tal:condition="not:group | nothing">
+    	<h1 i18n:translate="heading_group_members">Group Members</h1>
+    
+        <a href=""
+           class="link-parent"
+           tal:attributes="href string: $portal_url/prefs_groups_overview"
+           i18n:translate="label_up_to_groups_overview">
+        Up to Groups Overview
+        </a>
+
+        <p i18n:translate="label_no_group_specified">No group was specified.</p>
+    
+        <p><a href="prefs_groups_overview"
+              i18n:translate="label_find_group">Find a group here</a></p>
+    </div>
+    
+    <div class="documentContent"
+         tal:condition="group | nothing">
+    
+        <h1 i18n:translate="heading_group_members_of">Members of the <tal:group content="groupname" i18n:name="groupname">Groupname</tal:group> Group</h1>
+    	
+        <a href=""
+           class="link-parent"
+           tal:attributes="href string: $portal_url/prefs_groups_overview"
+           i18n:translate="label_up_to_groups_overview">
+        Up to Groups Overview
+        </a>
+
+        <p i18n:translate="description_group_members_of">
+        You can add or remove users from this particular group here. Note that this
+        doesn't actually delete the user, it is only removed from this group.
+        </p>
+    
+    
+    	<h2 i18n:translate="heading_search_newmembers">Search for new group members</h2>
+       
+        <form action=""
+          name="groups"
+          method="post"
+          tal:attributes="action here/absolute_url"
+	  tal:define="Batch python:modules['Products.CMFPlone'].Batch;
+                      b_start request/b_start | python:0;
+                      b_size python:20;
+                      searchstring request/searchstring | nothing;
+                      results python:here.prefs_user_group_search(searchstring, 'users');
+                      batch python:Batch(results, b_size, int(b_start), orphan=1)">
+
+	<input type="hidden" name="groupname" value="groupname" tal:attributes="value group/getGroupName" />
+	
+        <table class="listing" summary="Users">
+	  <tr>
+	    <th colspan="2">
+	      <span tal:omit-tag="" i18n:translate="label_quick_search">Quick search</span>:
+                    <input class="quickSearch"
+                           tabindex=""
+                           type="text"
+                           name="searchstring"
+                           value=""
+                           tal:attributes="value searchstring;
+		                           tabindex tabindex/next;"
+                           />
+                
+                    <input type="submit"
+                           class="searchButton"
+                           name="prefs_user_group_search_form"
+                           value="Search"
+                           tabindex=""
+                           i18n:attributes="value"
+                           tal:attributes="name string:${template/id}:method;
+		                           tabindex tabindex/next;" />
+
+	    </th>
+	  </tr>
+	  <tr>
+	    <th tal:condition="takeaction | nothing">
+            <input class="noborder"
+                   type="checkbox"
+                   src="select_all_icon.gif"
+                   name="selectButton"
+                   title="Select all items"
+                   onClick="toggleSelect(this, 'add:list');"
+                   tal:attributes="src string:$portal_url/select_all_icon.gif"
+                   alt="Select all items"
+                   i18n:attributes="title alt"/>
+            </th>
+            
+	    <th i18n:translate="listingheader_user_name">User name</th>
+	  </tr>
+
+	  <tal:block repeat="this_user batch">
+
+            <tr tal:define="oddrow repeat/this_user/odd;
+                            username python: to_utf8(this_user['username']);
+                            email python: to_utf8(this_user['email']);
+                            fullname python: to_utf8(this_user['fullname']);
+			    dummy    python: test(this_user.has_key('dn'), 1, None);
+			    isMember python: test(dummy and member_path is not None, dummy and this_user.get('dn').lower().endswith(member_path.lower()), dummy );
+			    isStaff  python: test(dummy and staff_path is not None, dummy and this_user.get('dn').lower().endswith(staff_path.lower()), dummy )"
+                tal:attributes="class python:test(oddrow,'odd','even')">
+
+	      <td class="listingCheckbox">
+                <input type="checkbox"
+                       class="noborder"
+                       name="add:list"
+                       value="value"
+		       tal:attributes="value username" />
+	      </td>
+
+	      <td>
+		<img src="user.gif" alt="" />
+		  <a href="" tal:attributes="href string:prefs_user_details?userid=$username"
+		             tal:condition="python:test(isMember or isStaff or not dummy, 1, 0)"
+                        tal:content="string: $username ($fullname, $email)">
+                  </a>
+		  <span  tal:condition="python:test(isMember or isStaff or not dummy, 0, 1)"
+		         tal:content="string:$username ($fullname, $email)" />
+	      </td>
+	    </tr>
+	  </tal:block>
+        </table>
+
+	<p tal:condition="not:batch" i18n:translate="text_nomatches">No matches</p>
+
+    <input type="hidden" value="b_start" name="b_start" 
+           tal:attributes="value b_start"/>
+
+	<div metal:use-macro="here/batch_macros/macros/navigation" />
+	
+	<input class="context"
+                       tabindex=""                                 
+                   	   type="submit"                               
+                   	   name="prefs_group_members_edit:method"
+                   	   value="Add selected users to this group"
+    	       	   tal:condition="batch" 
+                   	   tal:attributes="tabindex tabindex/next;"    
+                   	   i18n:attributes="value" />
+
+	<h2 i18n:translate="heading_groupmembers_current">Current Group Members</h2>
+    	<table class="listing">
+                <tr>
+                    <th>
+                        <input class="noborder"
+                               type="checkbox"
+                               src="select_all_icon.gif"
+                               name="selectButton"
+                               title="Select all items"
+                               onClick="toggleSelect(this, 'delete:list');"
+                               tal:attributes="src string:$portal_url/select_all_icon.gif"
+                               alt="Select all items"
+                               i18n:attributes="title alt"/>
+                               <!--Remove user from this group-->
+                    </th>
+                    <th i18n:translate="listingheader_user_name">User name</th>
+                    <th i18n:translate="listingheader_email_address">E-mail Address</th>
+                </tr>
+    
+                <tal:block tal:repeat="this_user group/getGroupMembers">
+                <tr tal:define="oddrow repeat/this_user/odd;
+                                refined_user python:here.portal_memberdata.resolveMember(this_user.getUserName());"
+                    tal:attributes="class python:test(oddrow,'odd','even');">
+                  <tal:block tal:define="roles python: this_user.getRoles();
+                                         username python: to_utf8(this_user.getUserName());
+                                         fullname python: to_utf8(this_user.getProperty('fullname', ''));
+					 dummy    python: test(refined_user.has_key('dn'), 1, None);
+					 isMember python: test(dummy and member_path is not None, dummy and refined_user.get('dn').lower().endswith(member_path.lower()), dummy );
+					 isStaff  python: test(dummy and staff_path is not None, dummy and refined_user.get('dn').lower().endswith(staff_path.lower()), dummy )">
+                    <td class="listingCheckbox">
+                        <input type="checkbox"
+                               class="noborder notify"
+                               name="delete:list" tal:attributes="value username" />
+                    </td>
+                    <td>
+                        <a tal:attributes="href string:${here/absolute_url}/prefs_user_details?userid=$username"
+                           tal:condition="python:test(isMember or isStaff or not dummy, 1, 0)">
+                         <img src=""
+                             tal:replace="structure portal/user.gif" />&nbsp;<span
+                             tal:replace="username">username</span>
+    
+                        (<span tal:replace="fullname">Full Name</span>)
+    
+                        </a>
+			<span
+			    tal:condition="python:test(isMember or isStaff or not dummy, 0, 1)">
+                            <tal:block replace="structure portal/user.gif"/>&nbsp;<span
+                                tal:replace="username">username</span>
+
+                            (<span tal:replace="fullname">Full Name</span>)
+
+                        </span>
+                    </td>
+
+                    <td tal:define="email python: this_user.getProperty('email','')">
+                        <a href="#" tal:attributes="href string:mailto:${email}"
+                               title="Send a mail to this user"
+                               tal:condition="email"
+                               i18n:attributes="title">
+                        <span tal:replace="email" />
+                        </a>
+                    </td>
+    
+    		</tal:block>
+                </tr>
+    	    </tal:block>
+            </table>
+    
+            <input class="destructive"
+                   type="submit"
+                   name="prefs_group_members_edit:method"
+                   value="Delete selected users"
+                   i18n:attributes="value" />
+
+    </form>
+
+    	 
+    	      </div>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,761 @@
+/*
+ *  This is the file where you put your CSS changes.
+ *  You should preferrably use this and override the
+ *  relevant properties you want to change here instead
+ *  of customizing plone.css to survive upgrades. Writing
+ *  your own plone.css only makes sense for very heavy
+ *  customizations. Useful variables from Plone are
+ *  documented at the bottom of this file.
+ *
+ */
+/* <dtml-var "enableHTTPCompression(request=REQUEST, debug=1, js=1)"> (this is for http compression) */
+/* <dtml-with base_properties> (do not remove this :) */
+/* <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either :) */
+
+h1 {
+    margin-bottom: 0.5em;
+}
+
+td {
+    vertical-align: top;
+}
+
+.topBar, .topBar a {
+    border: none;
+    padding: none;
+    /*font-weight: normal;*/
+    /*font-size: 1em;*/
+}
+
+.bottomBar {
+    background-color: transparent;
+    border-color: &dtml-contentViewBorderColor;;
+    border-style: &dtml-borderStyleSeparator;;
+    border-width: &dtml-borderWidth;;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding-left:0;
+    padding-right:0;
+}
+
+#content {
+    padding: 0 1em 0 1em;
+}
+
+#bodyContent p {
+    margin: 0 0 1em 0;
+
+}
+
+
+#bodyContent p.bold {
+    font-weight: bold;
+    margin-bottom: 1em;
+    margin-top: 1.5em;
+}
+
+.documentContent {
+    margin-top: 1em;
+}
+
+.documentContent .documentContent {
+    font-size: 100%;
+}
+
+#bodyContent table {
+    line-height:1.5em;
+}
+
+#bodyContent th {
+    vertical-align:top;
+    padding-right: 1em;
+    padding-bottom: 0.5em;
+}
+
+#bodyContent td {
+    vertical-align:top;
+    padding-right: 1em;
+}
+
+.documentContent h1 {
+    color: #333333;
+    font-size: 1.45em;
+}
+
+.documentContent h2 {
+    color: #333333;
+    font-size: 1.16em;
+    font-weight: bold;
+    margin-bottom: 1.25em;
+    padding-top: 1.5em;
+    padding-bottom: 0.1em;
+    margin-top: 0;
+
+}
+
+.documentContent h3 {
+    color: #333333;
+    font-size: 1.16em;
+    font-weight: bold;
+    margin-bottom: 0.25em;
+    padding-top: 1.8em;
+    /*padding-bottom: 0.05em;*/
+    margin-top: 0;
+
+}
+
+
+.documentContent a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.documentContent ul {
+    margin-bottom: 1em;
+    /*padding-left: 1em;*/
+}
+
+.documentContent li {
+    margin-bottom: 0.5em;
+}
+
+#bodyContent {
+    margin-top: 0;
+    padding-top: 0;
+}
+#bodyContent a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.link {
+    background: transparent url(&dtml-portal_url;/link.gif) 0em 0.2em no-repeat;
+    padding: 1px 0px 1px 10px;
+}
+
+.link-mailto {
+    background: transparent url(&dtml-portal_url;/mail_icon.gif) 0px 50% no-repeat;
+    padding: 1px 0px 1px 18px;
+}
+
+
+
+#portal-column-one .visualPadding {
+    padding: 2em 0em 1em 1em;
+}
+#portal-column-content .visualPadding {
+    padding: 0em 1em 1em 1em;
+}
+#portal-column-two .visualPadding {
+    padding: 2em 1em 1em 0em;
+}
+
+#portal-column-one-spacer {
+    width: <dtml-var columnOneWidth missing="16em">;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+}
+#portal-column-two-spacer {
+    width: <dtml-var columnTwoWidth missing="16em">;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+}
+
+#portal-column-one {
+    vertical-align: top;
+    width: 10%;
+}
+#portal-column-content {
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+#portal-column-two {
+    vertical-align: top;
+    width: 10%;
+}
+
+#portal-top {
+    background: transparent;
+    margin: 0;
+    padding: 0 0 0 0;
+}
+
+#portal-top table {
+    background: url(&dtml-portal_url;/header_bg.gif) bottom right repeat-x;
+    horizontal-align:left;
+    width: 100%;
+    border: 0px;
+}
+
+#portal-logo {
+    position: bottom;
+    width: 10px;
+    background: transparent;
+    background-image: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+#portal-logo a {
+    display: inline;
+    overflow: visible;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    height: auto;
+    width: auto;
+    cursor: pointer;
+}
+
+
+#portal-loc {
+    background: transparent url(loc_bg.jpg) bottom right no-repeat;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+#portal-breadcrumbs {
+    /* The path bar, including breadcrumbs and add to favorites */
+    border: none;
+    background-color: &dtml-primaryColor1;;
+    color: #FFFFFF;
+    padding: 0.2em 0em 0.3em 0em;
+    padding-left: 16px;
+    padding-right: 16px;
+    text-transform: &dtml-textTransform;;
+}
+#portal-breadcrumbs a,
+#portal-breadcrumbs a:active,
+#portal-breadcrumbs a:hover,
+#portal-breadcrumbs a:visited {
+    color: #FFFFFF;
+}
+
+#portal-personaltools {
+    background-color: transparent;
+    padding: 0.2em 0;
+    margin: 0 1em 0 1em;
+    text-align: right;
+    list-style: none;
+    z-index:5;
+    margin-top: 2em;
+    border: &dtml-borderWidth; &dtml-borderStyle; &dtml-contentViewBorderColor;;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+}
+#portal-personaltools ul {
+    line-height: normal;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+#portal-personaltools li {
+    display: inline;
+    font-weight: normal;
+    background-image: none;
+    padding: 0;
+    margin: 0;
+}
+#portal-personaltools li a {
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-fontColor;;
+    color: &dtml-fontColor;;
+    padding: 0 0.5em;
+    margin: 0;
+    height: auto;
+    line-height: normal;
+    text-decoration: none;
+    text-transform: &dtml-textTransform;;
+    z-index: 1;
+    white-space: nowrap;
+}
+.contentViews li a:hover {
+    background-color: transparent;
+    color: &dtml-contentViewFontColor;;
+}
+
+#portal-footer {
+    background-color: transparent;
+    border-top: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+    border-bottom: none;
+    float: none;
+    margin: 1em 0em 1em 0em;
+    padding: 0.3em 0em 1em 0em;
+    text-align: left;
+    position: static;
+    clear: both;
+}
+.copyright {
+    padding: 0 0.5em;
+}
+.footerActions {
+    float: right;
+    position: static;
+    top: 0;
+    right: 0;
+    text-align: right;
+    width: auto;
+}
+.footerActions ul,
+.footerActions li {
+    list-style: none;
+    list-style-image: none;
+    padding: 0;
+    margin: 0;
+}
+.footerActions li {
+    display: inline;
+}
+.footerActions li a {
+    color: &dtml-fontColor;;
+    text-decoration: none;
+    border-right: 1px solid &dtml-fontColor;;
+    padding: 0 0.5em;
+}
+.contentActions {
+    background-color: &dtml-contentNavBackgroundColor;;
+    border-bottom: &dtml-borderWidth; &dtml-borderStyleSeparator; &dtml-contentViewBorderColor;;
+    height: 1.35em;
+}
+.contentNav {
+    background-color: &dtml-contentNavBackgroundColor;;
+    padding: 0;
+    margin: 0;
+    margin-left: 1em;
+    margin-right: 1em;
+    text-align: left;
+    list-style: none;
+    border: 0;
+    z-index:5;
+    line-height: 1.2em;
+    margin-top: 2.3em;
+    padding-bottom: 1.3em;
+    border: 0;
+    border-bottom: &dtml-borderWidth; &dtml-borderStyle; &dtml-contentViewBorderColor;;
+}
+
+
+.documentEditable {
+    padding: 0em 2em 1em 2em !important;
+}
+.documentEditable #portal-personaltools {
+    margin-left:0;
+    margin-right:0;
+}
+.documentActions {
+    margin: -2em 0 2.5em 0;
+}
+
+.lastitem a {
+    border-right: none !important;
+}
+
+/* portlets */
+.portlet {
+    margin-bottom: 2em;
+    margin-left: 5px;
+}
+
+.portletHeader {
+    background: transparent;
+    text-transform: &dtml-textTransform;;
+    text-shadow: none;
+    display: block;
+    font-size: 1em;
+    height: auto;
+}
+.portlet h5,
+.portlet h6,
+.portletHeader {
+    border: none;
+    color: &dtml-portletHeaderFontColor;;
+    border-bottom: 2px solid &dtml-primaryColor1;;
+    padding: 0.2em 0;
+    display: block;
+    width: auto;
+    font-weight: bold;
+    white-space: normal;
+}
+
+.portletContent {
+    padding: 0.3em 0;
+}
+.portletBody {
+    border: none;
+    padding: 0;
+    padding-top: 0.5em;
+}
+.portletBody .separated,
+.listing .navSeparated {
+    border-top:  &dtml-borderWidth; &dtml-borderStyleSeparator; &dtml-portletSeparatorColor;;
+}
+.portletDetails {
+    padding-top: 0.3em;
+}
+
+.portletClose {
+    padding: 0em 0em 0em 0.2em;
+    margin-top: -17px;
+}
+.portlet input.searchButton {
+    background: transparent url(&dtml-portal_url;/link.gif) 2px 1px no-repeat;
+    cursor: pointer;
+    padding: 1px 1px 1px 8px;
+    text-transform: &dtml-textTransform;;
+    border: none;
+}
+/* elevateIT navigation portlet */
+.navigationList {
+    background-color: transparent;
+    padding: 0;
+    margin:0;
+}
+.navigationList ul {
+    margin:0;
+    padding: 0;
+    background: transparent;
+    list-style: none;
+    list-style-image: none;
+}
+.navigationList li {
+    margin:0;
+    padding:0;
+    list-style: none;
+    list-style-image: none;
+    background: transparent;
+    background-image: none;
+}
+.navigationList .portletContent {
+    padding: 0.3em 0;
+    margin: 0;
+}
+.navigationList li.active {
+    font-weight: bold;
+    background: transparent;
+    background-image: none;
+    padding: 0;
+    margin: 0;
+}
+.navigationList li.plain {
+    background-color: transparent;
+}
+.navigationList li * li a,
+.navigationList li * li a:active,
+.navigationList li * li a:visited,
+.navigationList li * li a.active,
+.navigationList li * li a.active:active,
+.navigationList li * li a.active:visited {
+    background: transparent url(&dtml-portal_url;/link.gif) 0% 50% no-repeat;
+    padding-left: 10px;
+}
+
+/*
+** Calendar elements - used in the calendar rendering
+*/
+
+.dayPopup {
+    background-color: &dtml-primaryColor5;;
+    border: none;
+    border-top: &dtml-borderWidth; &dtml-borderStyle; Black;
+    padding: 0.5em 0 0 0;
+    position: absolute;
+    visibility: hidden;
+    width: 17em;
+    z-index: 2;
+    overflow: hidden;
+}
+.dayPopup ul {
+    padding: 0.5em 0 0 0;
+    margin: 0;
+    border-bottom: &dtml-borderWidth; &dtml-borderStyle; Black;
+}
+.dayPopup li {
+    border-top: 1px solid &dtml-secondaryColor2;;
+    padding: 0.5em 0.2em !important;
+    margin: 0;
+    line-height: 1em;
+}
+.dayPopup .event {
+    background-color: #F7F7F7;
+}
+.dayPopup .seminar {
+    background-color: &dtml-primaryColor5;;
+}
+.date {
+    font-weight: bold;
+}
+.ploneCalendar {
+    border: none;
+    margin-top: 0;
+    margin-bottom: 2em;
+}
+.ploneCalendar a {
+    text-decoration: none;
+}
+.ploneCalendar a:hover {
+    text-decoration: none;
+}
+.ploneCalendar table {
+    width: 100%;
+}
+.ploneCalendar th {
+    background: transparent;
+    text-transform: &dtml-textTransform;;
+    text-shadow: none;
+    font-size: 1em;
+    height: auto;
+    border: none;
+    border-bottom: 2px solid &dtml-primaryColor1;;
+    padding: 0.3em 0;
+    width: auto;
+    font-weight: bold;
+    white-space: normal;
+}
+.ploneCalendarBody {
+    border: none;
+    padding: 0;
+}
+.ploneCalendar td {
+    padding: 2px 2px 2px 2px;
+}
+.ploneCalendar th.monthname {
+    padding: 0.3em 0;
+}
+.ploneCalendar .weekdays th {
+    background-color: transparent;
+    color: &dtml-secondaryColor2;;
+    font-weight: normal;
+    padding: 2px 0;
+}
+.ploneCalendar .event {
+    background-color: &dtml-primaryColor5;;
+}
+.ploneCalendar .todayevent {
+    background-color: &dtml-primaryColor5;;
+    border: 2px &dtml-borderStyle; &dtml-primaryColor1;;
+    font-weight: bold;
+}
+.ploneCalendar .todaynoevent {
+    border-collapse: collapse;
+    border: 2px &dtml-borderStyle; &dtml-primaryColor1;;
+}
+
+/* esc classes */
+.floatimg {
+    position: static;
+    float: left;
+    width: auto;
+    font-size: 1em;
+    margin-top: 0.4em;
+    padding-right: 20px;
+    text-align: left;
+    vertical-align: top;
+    padding-bottom: 1em;
+}
+
+/* IMU special */
+.attachmentBox {
+    padding: 1.5em 0 0.5em 0;
+}
+.attachmentBox .info {
+    float: none;
+    position: static;
+}
+.newsItem {
+    position: static;
+    width: auto;
+}
+
+.newsItem .headline {
+    position: static;
+}
+.newsView,
+.documentView {
+    clear: both;
+    border: none;
+    line-height: 1.5em;
+    position: static;
+    width: auto;
+}
+.newsView h1 {
+    border: none;
+    padding-top: 0;
+    margin-top: 0;
+    line-height: 1em;
+}
+.newsView .headline {
+    display: block;
+    padding: 1.1em 0 0.2em 0;
+    margin: 0;
+    display: block;
+    font-weight: bold;
+    font-size: 90%;
+    border-bottom: 1px solid &dtml-globalBorderColor;;
+    line-height: normal;
+    position: static;
+    width: auto;
+    color: #666666;
+}
+
+.newsView .documentActions {
+    margin-top: -1.5em;
+    margin-bottom: 2em;
+}
+.newsView .intro,
+.documentView .intro {
+    font-weight: bold;
+    margin-top: 0em;
+}
+.newsView .info,
+.documentView .info {
+    /* font-size: 100%; */
+    font-size: 90%;
+    font-weight: bold;
+    float: none;
+    position: static;
+    padding: 0;
+    margin: 0;
+    line-height:normal;
+    color: &dtml-discreetColor;;
+}
+.newsView .image,
+.documentView .image {
+    position: static;
+    float:left;
+    text-align: left;
+    /*padding: 0.3em 0.5em 1em 0em;*/
+    padding-right: 10px;
+}
+.newsView .image .info,
+.documentView .image .info {
+    float: none;
+    text-align: left;
+    font-weight: normal;
+    font-size: &dtml-fontSmallSize;;
+}
+.infotable {
+    line-height: normal;
+    width: 100%;
+    padding: 0.5em 0;
+    border: none;
+    clear: both;
+}
+.infotable th,
+.infotable td {
+    padding: 0.2em 1.5em 0.2em 0;
+    text-align: left;
+    vertical-align: top;
+}
+.infotable th {
+    padding: 0.3em 1em 0.3em 0;
+    color: #666666;
+    font-size: 90%;
+    white-space: nowrap;
+}
+.topicItem {
+    clear: both;
+    padding-bottom:20px
+}
+
+.topicItem .headline {
+    display: block;
+    border-bottom: 1px solid &dtml-globalBorderColor;;
+    /* background: transparent url(&dtml-portal_url;/list_view_bg.jpg) 0 0 repeat-y; */
+    font-weight: bold;
+    margin: 0.2em 0;
+    vertical-align: bottom;
+    color: &dtml-discreetColor;;
+}
+
+/*
+.topicItem .info {
+    padding: 0;
+    margin: 0;
+    line-height:normal;
+    color: &dtml-discreetColor;;
+}
+*/
+.topicItem .headline .text {
+    position: static;
+    padding: 1.5em 0em;
+    font-weight: normal;
+    font-size: &dtml-fontSmallSize;;
+}
+
+.topicItem .info {
+    position: static;
+    float: none;
+    padding: 0.2em 0em;
+    font-size: &dtml-fontSmallSize;;
+    font-weight: normal;
+    /* background-color: transparent; */
+}
+
+.subjheadline {
+    display: block;
+    border-bottom: 1px solid &dtml-globalBorderColor;;
+    background: transparent url(&dtml-portal_url;/list_view_bg.jpg) 0 0 repeat-y;
+    font-weight: bold;
+    margin: 1em 0;
+    vertical-align: bottom;
+    color: White;
+}
+
+h1.documentFirstHeading {
+    line-height: normal;
+
+}
+
+.subjheadline .text {
+    position: static;
+    padding: 0.2em 0.5em;
+}
+
+.link-pdf {
+    background: transparent url(&dtml-portal_url;/pdf_icon.gif) 0px 1px
+no-repeat;
+    padding: 1px 2px 1px 16px;
+}
+.link-doc {
+    background: transparent url(&dtml-portal_url;/msword_icon.gif) 0px
+-1px no-repeat;
+    padding: 0px 2px 1px 16px;
+}
+
+.link-xls {
+    background: transparent url(&dtml-portal_url;/xls_icon.gif) 0px -1px
+no-repeat;
+    padding: 0px 2px 1px 16px;
+}
+
+.link-ppt {
+    background: transparent url(&dtml-portal_url;/msppt_icon.gif) 0px
+-1px no-repeat;
+    padding: 0px 2px 1px 16px;
+}
+
+.link-zip {
+    background: transparent url(&dtml-portal_url;/zip_icon.gif) 0px -1px
+no-repeat;
+    padding: 0px 2px 1px 16px;
+}
+
+/* </dtml-with> */
+
+
+
+

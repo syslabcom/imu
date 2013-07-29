@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+<metal:block fill-slot="top_slot"
+             tal:define="dummy python:request.set('disable_border',1)" />
+
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+       tal:define="catresults python:here.queryCatalog();
+                 Batch python:modules['Products.CMFPlone'].Batch;
+                 DateTime python:modules['DateTime'].DateTime;
+                 desc_length site_properties/search_results_description_length;
+                 desc_ellipsis site_properties/ellipsis;
+                 searchterm request/SearchableText|nothing">
+                 <!-- div tal:content="python:[searchterm]" //-->
+
+    <h1 i18n:translate="heading_search_results">Search results</h1>
+
+    <div tal:condition="not: catresults">
+        <p><strong i18n:translate="description_no_results_found">No results were found.</strong></p>
+    </div>
+
+    <p i18n:translate="search_results_advanced">
+    Did you not find what you were looking for? Try the
+    <span i18n:name="advanced_search">
+    <a href=""
+       tal:attributes="href string:$portal_url/search_form">advanced search</a>
+    </span>
+    for more precise search options.
+    </p>
+
+    <div tal:condition="catresults">
+
+        <strong>
+        <span i18n:translate="batch_x_items_matching_your_criteria"><span i18n:name="number" tal:content="python:len(catresults)">234</span> items matching your criteria.</span>
+        </strong>
+
+        <a href="" tal:attributes="href string:$here_url/search_rss?${request/QUERY_STRING}">
+        <img tal:attributes="src string:$portal_url/rss.gif"
+             src="rss.gif"
+             alt="RSS Feed"
+             title="RSS feed of these search results"
+             i18n:attributes="title alt" />
+        </a>
+
+        <!-- Search results -->
+        <tal:results
+             define="catresults here/queryCatalog;
+             resmap python:here.groupCatresByCity(catresults);
+             cities python:[x for x in resmap.keys() if x=='gesamt']+[x for x in resmap.keys() if x!='gesamt'];
+             b_size python:30;
+             b_start python:0;
+             b_start request/b_start | b_start"
+             tal:condition="cities">
+
+        <tal:city repeat="city cities">
+            <div class="subjheadline"><div class="text">
+                <tal:cities condition="python:test(city!='gesamt', 1, 0)">
+                <span tal:omit-tag="" i18n:translate="header_search_city"
+                      tal:define="cityfolder python:getattr(portal, city, '');
+                      cityname cityfolder/Title|string:-">Searchresults in <span
+                i18n:name="city" tal:content="cityname" /></span>
+                </tal:cities>
+                <tal:complete condition="python:test(city!='gesamt', 0, 1)">
+                <span tal:omit-tag="" i18n:translate="header_search_all">Searchresults in IMU</span>
+                </tal:complete>
+                </div>
+            </div>
+
+            <dl tal:define="batch python:resmap[city]">
+            <tal:results repeat="result batch">
+            <tal:entry define="result_url result/getURL;
+                           url string:$result_url/view?searchterm=${searchterm};">
+            <dt>
+            <a href="#" tal:attributes="href url">
+                <img src="#"
+                     height="16"
+                     width="16"
+                     alt=""
+                     tal:on-error="structure python:path('here/linkOpaque.gif')"
+                     tal:replace="structure python:path('here/%s' % result.getIcon)" />&nbsp;<span
+                tal:replace="python:result.Title or result.getId" /></a>
+            </dt>
+
+            <p tal:content="structure python:here.cropText(result.Description, desc_length, desc_ellipsis)"> Description </p>
+
+        </tal:entry>
+            </tal:results>
+            </dl>
+
+        <!-- Navigation -->
+        <!--div metal:use-macro="here/batch_macros/macros/navigation" /-->
+        </tal:city>
+        </tal:results>
+
+    </div>
+
+    <!-- rss search -->
+    <metal:block use-macro="here/search_macros/macros/rss_params" />
+
+</div>
+
+</html>
+

@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+  <body>
+  
+  <div metal:fill-slot="main" i18n:domain="elevateIT"
+       tal:define="errors options/state/getErrors;
+       folder nocall:here;
+       itemtype python:here.getTypeInfo().Title()">
+
+   <h1><span i18n:translate="heading_upload_research">
+    Upload projects to folder 
+    <span i18n:name="foldername">
+     <span tal:content="folder/Title"
+     tal:omit-tag="">Folder</span>
+    </span></span>
+   </h1>
+   
+   <p i18n:domain="elevateIT" i18n:translate="description_upload_research">
+    Upload a csv database export to add a research object for each database entry.
+   </p> 
+   
+   <form name="upload_form"
+         action="."
+         method="post"
+         enctype="multipart/form-data"
+         tal:attributes="action string:${here/absolute_url}/${template/getId}">
+
+    <fieldset>
+
+     <legend i18n:translate="legend_upload_details">Upload Details</legend>
+
+     <div class="field"
+          tal:define="error errors/file|nothing;"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="file" i18n:translate="label_file">File</label>
+      <span class="fieldRequired" title="Required"
+            i18n:attributes="title"
+      i18n:translate="label_required">(Required)</span> 
+
+
+      <div tal:content="error" i18n:translate="">Validation error output</div>
+
+      <input type="file"
+             id="file"
+             name="file"
+             size="30"
+             tabindex=""
+             value=""
+             tal:attributes="tabindex tabindex/next"
+             />
+     </div>
+     
+     <div class="formControls"
+          tal:define="process_creation request/process_creation|nothing;">
+      <input class="context"
+             tabindex=""
+             type="submit"
+             name="form.button.Upload"
+             value="Upload"
+             tal:attributes="tabindex tabindex/next;" 
+             i18n:attributes="value" />
+
+      <input class="standalone"
+             tabindex=""
+             type="submit"
+             name="form.button.Cancel"
+             value="Cancel"
+             tal:attributes="tabindex tabindex/next;" 
+             i18n:attributes="value" />
+
+     </div>
+    </fieldset>
+    
+    <input type="hidden" name="form.submitted" value="1" />
+
+   </form>
+   </div>
+
+ </body>
+</html>

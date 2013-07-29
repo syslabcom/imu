@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      i18n:domain="plone">
+
+<body>
+
+<div id="portal-footer" metal:define-macro="portal_footer" tal:define="portal_url here/portal_url">
+    <div id="visual-footer-wrapper" i18n:domain="elevateIT">
+        <div style="padding-right:0.5em" class="footerActions">
+        <ul>
+            <li><a href="" tal:attributes="href string:${portal_url}/impressum" i18n:translate="">Impressum</a></li>
+            <li tal:attributes="class python:test(user and not isAnon, 'lastitem', '')"><a href="" tal:attributes="href string:${portal_url}/navigation_view" i18n:translate="">Sitemap</a></li>
+            <li tal:condition="python:not user or isAnon" class="lastitem">
+                <a href="" tal:attributes="href string:${portal_url}/login_form" i18n:translate="">Login</a></li>
+        </ul>
+        </div>
+        <div style="padding-left:1.4em" class="copyright">&copy; 2005 IMU Institut</div>
+        
+    </div>
+    
+</div>
+
+</body>
+</html>

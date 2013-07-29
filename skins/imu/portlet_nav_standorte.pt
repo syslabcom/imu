@@ -1,0 +1,80 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+<body>
+
+
+<metal:block define-macro="portlet" tal:define="nav nocall:here/navigation_standorte|nothing;
+     " tal:condition="nocall:nav">
+<div class="portlet"
+     tal:define="params python:nav.getContextNavList(0, [], 100, request, try_cache=1);
+     Iterator python:modules['Products.CMFPlone'].IndexIterator;
+     mtabindex python:Iterator(pos=100);
+     nodelist python:params[1];
+     base_props nocall:here/portal_skins/base_properties|nothing;
+     col_bg_header base_props/navPortletHeaderColor|string:#333333;
+     col_font_header base_props/navPortletHeaderFontColor|string:#FFFFFF;
+     col_bg_body base_props/navPortletBackgroundColor|string:#FFFDE8;
+     e_icon base_props/navPortletEditIcon|string:edit_box.gif;
+     edit_condition python:context.portal_membership.checkPermission('Navigation: manage', nav);
+     customization_link python:nav.absolute_url()+'/folder_contents'">
+    <div class="padding"
+         tal:attributes="style python:test(col_bg_body, 'background-color: '+col_bg_body, '')">
+
+        <strong class="portletHeader" 
+            i18n:translate="" tal:define="cssstyle1 python:test(col_bg_header, 'background-color: '+col_bg_header, '');
+            cssstyle2 python:test(col_font_header, 'color: '+col_font_header, '');
+            cssstyle string:${cssstyle1};;${cssstyle2}"
+            tal:attributes="style cssstyle" tal:content="nav/Title|string:Menu"
+            >Menu</strong>     
+        <div class="portletClose"><a 
+            tal:condition="python:test(edit_condition , 1, 0)"
+            tal:attributes="href customization_link"  tal:on-error="nothing"
+           href=''><img src="edit_box.gif" border="0" width="13" height="12" alt="edit portlet content"
+           tal:attributes="src string:${here/portal_url}/${e_icon}"
+           i18n:attributes="alt"/></a>
+       </div>
+
+            
+        <div class="portletBody">
+            <div class="navigationList">
+
+            <ul metal:define-macro="nav_children" 
+                tal:define="navlist childlist|nodelist"
+                tal:condition="navlist">
+                <metal:block tal:repeat="node navlist">
+                    <li tal:attributes="class python:test(node['active'], test(len(childlist)>0, 'arrow_down active', 'active'), '')"
+                        tal:define="childlist python:node.get('children', [])">
+                        
+                        <div tal:define="styleclass python:test(node['hasLine']==1, 'portletContent separated', 'portletContent');
+                             indent python:12 * (int(node['depth'])-1)"
+                             tal:attributes="class styleclass;
+                                             style python:'padding-left:'+ str(indent) +'px'"
+                             i18n:domain="plone">
+                            
+                            <a href="" tal:define="target nocall:node/getTarget|nothing;
+                               target python:test(target != '', target, '_self')"
+                               accesskey="accesskeys-navigation"
+                               i18n:attributes="accesskey"
+                               tal:attributes="href string:${node/targetUrl};
+                                   tabindex mtabindex/next;
+                                   target target;
+                                   class python:test(node['active'], 'active', '')"
+                               tal:content="node/Title|node/id">node/id</a>
+                        </div>
+        
+                        <div tal:condition="python:3>node['depth'] and len(childlist)>0"
+                                     tal:define="childlist childlist">
+                            <ul metal:use-macro="here/portlet_nav_standorte/macros/nav_children" />
+                        </div>
+                    </li>
+                </metal:block>
+                
+            </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</metal:block>
+
+</body>
+</html>

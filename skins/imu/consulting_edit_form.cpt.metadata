@@ -1,0 +1,14 @@
+[default]
+title=Edit Consulting
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators..Save=validate_id, validate_title, validate_pagetemplate
+validators..Cancel=
+
+[actions]
+action.success..Save=traverse_to:string:consulting_edit
+action.success..Cancel=redirect_to_action:string:view
+action.failure=traverse_to:string:consulting_edit_form

@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="plone">
+
+<body>
+<div class="listingBar topBar"
+     metal:define-macro="nav_top">
+     <metal:block use-macro="here/multipage_nav/macros/navigation_base" />
+</div>
+<div class="listingBar bottomBar"
+     metal:define-macro="nav_bottom">
+     <metal:block use-macro="here/multipage_nav/macros/navigation_base" />
+</div>
+
+<metal:block
+     metal:define-macro="navigation_base"
+     tal:define="mp_info mp_info|nothing"
+     tal:condition="mp_info"
+     i18n:domain="elevateIT">
+     
+    <span class="previous"
+      tal:define="p nocall:mp_info/previous | nothing">
+        <a href="" tal:condition="nocall:p"
+           tal:attributes="href string:${p/absolute_url}/view">
+           &laquo; <span i18n:translate="mp_back" tal:omit-tag="">back</span>
+        </a>
+    </span>
+
+    <span class="next"
+      tal:define="n nocall:mp_info/next | nothing">
+        <a href="" tal:condition="nocall:n"
+           tal:attributes="href string:${n/absolute_url}/view">
+           <span i18n:translate="mp_forward" tal:omit-tag="">forward</span> &raquo;
+        </a>
+    </span>
+    
+    <span tal:repeat="e python:range(len(mp_info['elems']))">
+        <a href="" tal:condition="python:mp_info['elems'][e]!=mp_info['current']"
+           tal:attributes="href python:mp_info['elems'][e].absolute_url()+'/view'"
+           tal:content="python:e+1" />
+        <span tal:condition="python:mp_info['elems'][e]==mp_info['current']" tal:omit-tag="">
+           [<span tal:content="python:e+1" />]</span>
+    </span>
+    
+</metal:block>
+</body>
+</html>

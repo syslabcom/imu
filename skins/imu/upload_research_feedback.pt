@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+  <body>
+  
+  <div metal:fill-slot="main" i18n:domain="elevateIT"
+       tal:define="folder nocall:here;
+       feedback options/feedback|python:{};
+       entries feedback/entries|python:[]">
+
+   <h1><span tal:omit-tag="" i18n:translate="heading_upload_research_feedback">
+    Feedback: Upload projects to folder 
+    <span i18n:name="foldername">
+     <span tal:content="folder/Title"
+     tal:omit-tag="">Folder</span>
+    </span></span>
+   </h1>
+   
+   <p i18n:translate="description_upload_research_feedback_success" tal:condition="entries">
+    Your upload of research projects was successful.</p>
+    
+   <p i18n:translate="upload_research_num_entries" tal:condition="entries">
+    <span i18n:name="num">
+     <span tal:content="feedback/num_entries"
+     tal:omit-tag="">Num</span>
+    </span> database entries have been uploaded.
+   </p> 
+   
+   <p i18n:translate="description_upload_research_feedback_failure" tal:condition="not:entries">
+    No projects have been uploaded.
+   </p> 
+   
+   <table tal:condition="entries" width="100%">
+        <tr>
+            <th></th>
+            <th i18n:domain="plone" i18n:translate="label_title">Title</th>
+            <th i18n:domain="elevateIT" i18n:translate="label_projectid">Projectid</th>
+            <th i18n:domain="plone" i18n:translate="label_state">Status</th>
+            <th i18n:domain="elevateIT" i18n:translate="label_message">Message</th>
+        </tr>
+        <tal:block repeat="res entries">
+        <tr tal:define="obj python:res['obj'];
+            mssg python:res.get('msg', 'no message');
+            stat python:res.get('status', '').strip()"
+            tal:condition="python:obj and obj != None">
+            <td width="1%">
+            <img alt="Research" 
+                 tal:attributes="src python:portal_url+'/research_icon.gif'" 
+                i18n:attributes="alt" width="16" height="16" border="0" />
+            </td>
+            <td><a style="bold" href="" tal:attributes="href string:${obj/absolute_url}/view"
+               tal:content="obj/Title|obj/title_or_id">object</a>
+            </td>
+            <td><span tal:replace="obj/mandant" /><span tal:replace="obj/projectnumber" />
+            </td>
+            <td i18n:domain="elevateIT" 
+                tal:define="scol python:test(stat=='created', 'green', 'orange');
+                scol python:test(stat=='error', 'red', scol)"
+                tal:attributes="style string:color:$scol">
+                <span tal:replace="stat" />
+            </td>
+            <td width="40%">
+                <span tal:replace="mssg" />
+            </td>
+        </tr>
+        </tal:block>
+   </table>
+
+ </div>
+ </body>
+</html>

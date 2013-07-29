@@ -1,0 +1,299 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+ <head>
+      <metal:calendar fill-slot="javascript_head_slot">
+        <!-- ECMAScript calendar -->
+        <style type="text/css" media="all"
+            tal:content="string:@import url($portal_url/jscalendar/calendar-system.css);"></style>
+        <script type="text/javascript"
+            tal:attributes="src string:$portal_url/jscalendar/calendar_stripped.js"></script>
+        <script type="text/javascript" charset="iso-8859-1"
+            tal:condition="exists: portal/jscalendar/calendar-en.js"
+            tal:attributes="src string:$portal_url/jscalendar/calendar-en.js"></script>
+      </metal:calendar>
+  </head>
+  <body>
+ 
+ 
+  <div metal:fill-slot="main" i18n:domain="elevateIT"
+       tal:define="dummy python:here.getStagingContext(tpl=template.id);
+       errors options/state/getErrors;
+       itemtype python:here.getTypeInfo().Title();
+       editor python:member.getProperty('wysiwyg_editor','None');
+       edit_language request/edit_language|prefLang;
+       lang_name python:ltool.getNameForLanguageCode(edit_language);
+       wysiwyg python:test(editor and editor!='None', editor, 'None');
+       global zpt_error string:;
+       DateTime python:modules['DateTime'].DateTime;
+       EditableBody python:here.EditableBody(edit_language);
+       text python:request.get('text', EditableBody);
+       ">
+
+   <h1><span tal:omit-tag="" i18n:translate="heading_edit_item">
+    Edit
+    <span i18n:name="itemtype">
+     <span tal:content="itemtype" i18n:translate=""
+     tal:omit-tag="">Item type</span>
+    </span></span> (<span i18n:domain="dynamic_motherlanguages"
+                        i18n:translate="" tal:content="lang_name" />)
+   </h1>
+   
+    <div metal:use-macro="here/content_stagechooser/macros/stage_chooser_edit" />
+   
+   <p i18n:translate="description_edit_consulting">
+    Fill in the details of this consulting case.
+   </p> 
+   
+   
+   <form name="edit_form"
+         action="."
+         method="post"
+         enctype="multipart/form-data"
+         tal:attributes="action string:${here/absolute_url}/${template/getId}" >
+
+    <fieldset>
+
+     <legend i18n:translate="legend_consulting_details">Consulting Details</legend>
+
+     <div class="field"
+          tal:condition="here/show_visible_ids"
+          tal:define="error errors/id | nothing;
+          id python:request.get('id', test(here.show_id(),here.getId(),''));"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="id" i18n:translate="label_short_name">Short Name</label>
+
+      <div class="formHelp" i18n:domain="elevateIT" i18n:translate="help_shortname">
+       Should not contain spaces, underscores or mixed case.
+       Short Name is part of the document's web address.
+      </div>
+
+      <div tal:content="error" i18n:translate="">Validation error output</div>
+
+      <input type="text"
+             id="id"
+             name="id"
+             value=""
+             size="40"
+             tabindex=""
+             tal:attributes="value id;
+             tabindex tabindex/next;"
+             />
+
+     </div>
+
+     <input type="hidden"
+            name="id"
+            tal:condition="not:here/show_visible_ids"
+            tal:attributes="value python:request.get('id', here.getId())"
+            />
+            
+     <div class="field"
+          tal:define="error errors/title|nothing;
+          Title request/title | python:here.editableProp( 'title');"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="title" i18n:translate="label_title">Title</label> (<span 
+                    tal:replace="edit_language" />)
+
+      <span class="fieldRequired" title="Required"
+            i18n:attributes="title"
+      i18n:translate="label_required">(Required)</span> 
+
+      <div tal:content="error" i18n:translate="">Validation error output</div>
+
+      <input type="text"
+             id="title"
+             name="title"
+             value=""
+             size="40"
+             tabindex=""
+             tal:attributes="value Title;
+             tabindex tabindex/next;"
+             />
+
+     </div>
+     
+    <div class="field"
+        tal:define="description request/description|python:here.editableProp( 'description')">
+
+    <label for="description" i18n:translate="label_subtitle">Subtitle</label> (<span 
+                    tal:replace="edit_language" />)
+
+    <div class="formHelp" i18n:translate="help_description">
+        A brief description of the item.
+    </div>
+
+    <textarea cols="80"
+                rows="5"
+                tabindex=""
+                id="description"
+                name="description"
+                tal:content="description"
+                tal:attributes="tabindex tabindex/next;"
+                >
+        Description
+    </textarea>
+    </div>     
+    
+    <div class="field" tal:define="client request/client | here/client | string:">
+
+      <label for="client" i18n:translate="label_client">Client</label>
+      <br />
+      <input type="text"
+             id="client"
+             name="client"
+             value=""
+             size="40"
+             tabindex=""
+             tal:attributes="value client;
+             tabindex tabindex/next;"
+             />
+
+     </div>
+     
+
+    <div class="field" tal:define="period request/period | here/period | string:">
+
+      <label for="period" i18n:translate="label_period">Period</label>
+      <br />
+      <input type="text"
+             id="period"
+             name="period"
+             value=""
+             size="40"
+             tabindex=""
+             tal:attributes="value period;
+             tabindex tabindex/next;"
+             />
+
+     
+     </div>
+
+    <div class="field" tal:define="contact request/contact | here/contact | string:">
+
+      <label for="contact" i18n:translate="label_contact">Contact</label>
+      <br />
+      <input type="text"
+             id="contact"
+             name="contact"
+             value=""
+             size="40"
+             tabindex=""
+             tal:attributes="value contact;
+             tabindex tabindex/next;"
+             />
+
+     
+     </div>
+     
+    <tal:block condition="python:here.text_format=='zpt'">
+        <tal:block define="text text;
+                   zpt_errors python:utiltool.validatePageTemplate(here, text);
+                   global zpt_error python:'\n'.join(zpt_errors)" />
+    </tal:block>
+     
+     <div class="field" tal:define="error errors/text|zpt_error|nothing;
+          cooked_text python:request.get('text',getattr(here,'CookedBody',getattr(here,'cooked_text','')))"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="text" i18n:translate="label_body_text">Body text</label> (<span 
+                    tal:replace="edit_language" />)
+
+      <div tal:content="error" i18n:translate="">Validation error output</div>
+      
+      <tal:editor define="inputname  string:text;
+                  formname   string:edit_form;
+                  inputvalue text;
+                  tabindex tabindex/next;">
+       <div metal:use-macro="here/wysiwyg_support/macros/wysiwygEditorBox">
+        The WYSIWYG code
+       </div>
+      </tal:editor>
+      
+      <metal:block tal:define="global allowed_content_rendering python:here.get_allowed_content_rendering()" >
+          <div metal:use-macro="here/wysiwyg_support/macros/textFormatSelector">
+          Format box, if needed    
+          </div>
+      </metal:block>
+     </div>
+
+     <div class="field"
+          tal:define="error errors/file|nothing;"
+          tal:attributes="class python:test(error, 'field error', 'field')">
+
+      <label for="file" i18n:translate="label_upload_contents_optional">Upload contents (optional)</label>
+
+      <div class="formHelp" i18n:translate="help_uploads">
+       Uploaded files will replace the body text entered above.
+      </div>
+
+      <div tal:content="error" i18n:translate="">Validation error output</div>
+
+      <input type="file"
+             id="file"
+             name="file"
+             size="30"
+             tabindex=""
+             value=""
+             tal:attributes="tabindex tabindex/next"
+             />
+     </div>
+     
+     <!--div class="field">
+     <input type="checkbox"
+            id="translation_complete"
+            name="translation_complete"
+            /> <label for="translation_complete" i18n:translate="lable_translation_complete">Translation complete</label> (<span 
+                    tal:replace="edit_language" />)
+     
+     <div class="formHelp" i18n:translate="help_translation_complete">
+        If you check this box, this language version will be marked as completely translated. Every change to 
+        the document without checking here will set the translation status to incomplete again.</div>
+     </div-->
+        
+
+     <div class="formControls"
+          tal:define="process_creation request/process_creation|nothing;">
+      <input class="context"
+             tabindex=""
+             type="submit"
+             name="form.button.Save"
+             value="Save"
+             tal:attributes="tabindex tabindex/next;" 
+             i18n:attributes="value" />
+
+      <input class="standalone"
+             tabindex=""
+             type="submit"
+             name="form.button.Cancel"
+             value="Cancel"
+             tal:attributes="tabindex tabindex/next;" 
+             i18n:attributes="value" />
+
+     </div>
+    </fieldset>
+    
+    <input type="hidden" name="edit_language" value="1" tal:attributes="value edit_language" />
+    <input type="hidden" name="form.submitted" value="1" />
+
+   </form>
+   
+   <metal:attachments metal:use-macro="here/attachmentBox/macros/attachmentBox" />
+    
+   <div metal:use-macro="here/document_byline/macros/byline">
+      Get the byline - contains details about author and modification date.
+    </div>
+
+  </div>
+<metal:bottom fill-slot="bottom">
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+</metal:bottom>
+
+ </body>
+</html>

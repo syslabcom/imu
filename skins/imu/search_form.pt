@@ -1,0 +1,195 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+<metal:head fill-slot="top_slot"
+            tal:define="dummy python:request.set('disable_border',1)" />
+
+<div metal:fill-slot="main" i18n:domain="elevateIT">
+
+    <h1 i18n:translate="heading_simple_search">Search for content</h1>
+
+    <p i18n:translate="description_advanced_search">
+    This search form enables you to find content on the site by
+    specifying one or more search terms.
+    <br />
+    Remember that you can use the quick search anytime, it's normally
+    good enough, this search form is just if you want to be more specific.
+    </p>
+    
+    <form action="search"
+          method="get"
+          name="search"
+          tal:define="DateTime python:modules['DateTime'].DateTime">
+
+       
+        <fieldset>
+
+            <legend i18n:translate="legend_search_terms">Search Terms</legend>
+            
+            <div class="field">
+                <label for="SearchableText" i18n:translate="label_search_text">Search Text</label>
+        
+                <div class="formHelp" i18n:translate="help_search_text">
+                For a simple text search, enter your search term
+                here. multiple="multiple" words may be found by combining
+                them with <strong>AND</strong> and <strong>OR</strong>.
+                The text in this field will be matched with
+                items' contents, title and description.
+                </div>
+        
+                <input type="text"
+                       id="SearchableText"
+                       name="SearchableText"
+                       size="25"
+                       tabindex=""
+                       tal:attributes="value SearchableText|request/SearchableText|nothing;
+                       tabindex tabindex/next;"
+                       />
+            </div>
+            
+            <div class="field" tal:define="cities portal/cityfolders|python:[]">
+                <label i18n:translate="label_search_in">Search in</label>
+        
+                <div class="formHelp" i18n:translate="help_search_in_city">
+                Search only in the specific city.
+                </div>
+        
+                <span class="optionsToggle" tal:define="tabindex tabindex/next">
+                    <input type="checkbox"
+                           onclick="javascript:toggleSelect(this, 'path:list', true);"
+                           onkeypress="evalKey(event, 'toggleSelect', [this, 'path:list', true]); return true;"
+                           name="cpt_toggle"
+                           value="#"
+                           id="cpt_toggle"
+                           class="noborder"
+                           tabindex=""
+                           checked="checked"
+                           tal:attributes="tabindex tabindex;" />
+                    <label for=""
+                           tal:attributes="for string:cpt_toggle"
+                           i18n:translate="label_select_allornone"
+                           >Select All/None
+                    </label>
+                </span>
+                <br />
+                <tal:tabindex define="tabindex tabindex/next">
+                    <input type="checkbox"
+                           name="path:list"
+                           value="#"
+                           class="noborder"
+                           checked="checked"
+                           tabindex=""
+                           tal:attributes="value python:'/';
+                                           tabindex tabindex;
+                                           id string:city_${tabindex}"/>
+                    <label for=""
+                           tal:attributes="for string:city_${tabindex}" i18n:translate="">IMU gesamt</label>
+                    <br />
+                </tal:tabindex>
+                <tal:contenttypes repeat="city cities">
+                    <tal:tabindex define="tabindex tabindex/next;
+                    cfolder python:portal.restrictedTraverse(city, nothing)"
+                    condition="nocall:cfolder">
+                    <input type="checkbox"
+                           name="path:list"
+                           value="#"
+                           class="noborder"
+                           checked="checked"
+                           tabindex=""
+                           tal:attributes="value python:utool.getPortalPath()+'/'+utool.getRelativeContentURL(cfolder);
+                                           tabindex tabindex;
+                                           id string:city_${tabindex}"/>
+                    <label for=""
+                           tal:attributes="for string:city_${tabindex}" i18n:translate=""
+                           tal:content="cfolder/Title|string:" />
+                    <br />
+                    </tal:tabindex>
+                </tal:contenttypes>
+            </div>
+            
+            <div class="field" 
+            tal:define="portal_types python:{'Consulting':'Consultings',
+                        'Seminar':'Seminars',
+                        'Research':'Research projects',
+                        'Publication':'Publications'};
+                        ptypes request/portal_type|python:[]">
+                <label i18n:translate="label_search_for">Search for</label>
+        
+                <div class="formHelp" i18n:translate="help_search_for">
+                Return items of a specific type.
+                </div>
+        
+                <span class="optionsToggle" tal:define="tabindex tabindex/next">
+                    <input type="checkbox"
+                           onclick="javascript:toggleSelect(this, 'portal_type:list', true);"
+                           onkeypress="evalKey(event, 'toggleSelect', [this, 'portal_type:list', true]); return true;"
+                           name="ppt_toggle"
+                           value="#"
+                           id="ppt_toggle"
+                           class="noborder"
+                           tabindex=""
+                           checked="checked"
+                           tal:attributes="tabindex tabindex;"/>
+                    <label for=""
+                           tal:attributes="for string:ppt_toggle"
+                           i18n:translate="label_select_allornone"
+                           >Select All/None
+                    </label>
+                </span>
+                <br />
+                <tal:tabindex define="tabindex tabindex/next">
+                    <input type="checkbox"
+                           name="portal_type:list"
+                           value="#"
+                           class="noborder"
+                           checked="checked"
+                           tabindex=""
+                           tal:attributes="value python:'all';
+                                           tabindex tabindex;
+                                           checked python:test(ptypes, '', 'checked');
+                                           id string:portal_type_${tabindex}"/>
+                    <label for=""
+                           tal:attributes="for string:portal_type_${tabindex}" i18n:translate="">Alle</label>
+                    <br />
+                </tal:tabindex>
+                <tal:contenttypes repeat="type python:portal_types.keys()">
+                    <tal:tabindex define="tabindex tabindex/next">
+                    <input type="checkbox"
+                           name="portal_type:list"
+                           value="#"
+                           class="noborder"
+                           checked="checked"
+                           tabindex=""
+                           tal:attributes="value type;
+                                           tabindex tabindex;
+                                           checked python:test(ptypes, test(type in ptypes, 'checked', ''), 'checked');
+                                           id string:portal_type_${tabindex}"/>
+                    <label for=""
+                           tal:attributes="for string:portal_type_${tabindex}" i18n:translate=""
+                           tal:content="python: portal_types[type]"
+                           />
+                    <br />
+                    </tal:tabindex>
+                </tal:contenttypes>
+            </div>
+            
+            <div class="formControls">
+                <input class="context"
+                       tabindex=""
+                       type="submit"
+                       name="submit"
+                       value="Search"
+                       i18n:attributes="value"
+                       tal:attributes="tabindex tabindex/next;"
+                       />
+            </div>
+
+        </fieldset>
+    
+    </form>
+   
+</div>
+
+</html>

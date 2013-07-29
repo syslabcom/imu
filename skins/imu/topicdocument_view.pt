@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+<body>
+
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+            tal:define="text here/Text | here/text;
+            itemtype python:here.getTypeInfo().Title();
+            len_text python:len(text);
+            toPortalTime nocall:here/toPortalTime;
+            di here/getDefaultImage|string:"
+            class="documentView">
+
+
+    <div metal:use-macro="here/content_languagechooser/macros/language_chooser_view" />
+
+    <h1 tal:content="python:here.title_or_id()" class="documentFirstHeading">
+      Title or id
+    </h1>
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+
+    <tal:block tal:define="defimage python:getattr(here, di, '')"
+        tal:condition="defimage/id" tal:on-error="nothing">
+        <div class="image" tal:define="imgtitle defimage/title_or_id|nothing;
+             imgwidth defimage/width|string:auto"
+             tal:attributes="style python:'width:'+str(imgwidth)+'px'">
+
+            <img alt="" src="folder.gif"
+                 tal:attributes="src python:defimage.absolute_url();
+                 title imgtitle;
+                 alt imgtitle" />
+            <div class="info" tal:content="defimage/title_or_id|nothing"></div>
+        </div>
+
+    </tal:block>
+
+    <div id="bodyContent"
+     class="stx"
+     tal:condition="len_text"
+     tal:attributes="class python:test(here.text_format=='structured-text', 'stx', 'plain')">
+    <div tal:replace="structure python:here.CookedBody()" tal:on-error="string:this page contains errors"  />
+    </div>
+
+    <metal:block define-macro="listing">
+
+      <tal:results
+           define="results here/queryCatalog;
+           sortfunction python:(('EffectiveDate', 'cmp', 'desc'), );
+           batchsize here/getList_batchsize|python:10;
+           batch python:results[:batchsize]"
+           tal:condition="batch">
+
+        <tal:block repeat="catres batch">
+            <div class="topicItem"
+                 tal:define="ob python:catres.getObject();
+                 scfinfo python:ob.getFirstParent(city=1);
+                 scfname python:scfinfo[0];
+                 descr ob/Description|string:;
+                 icon catres/getIcon;
+                 ptype catres/portal_type;
+                 date catres/EffectiveDate|nothing;
+                 url python:ob.absolute_url()+'/view'">
+
+                <div class="headline">
+                    <div class="info" tal:condition="date"
+                          style="float: right;position: relative; width: auto">
+                          <tal:seminar condition="python:test(ob.portal_type=='Seminar', 1, 0)">
+                          <span tal:replace="python:toPortalTime(ob.start_date)" /> <span i18n:translate="from_to">bis</span> <span
+                          tal:replace="python:toPortalTime(ob.end_date)" />
+                          </tal:seminar>
+                          <tal:other condition="python:test(ob.portal_type=='Seminar', 0, 1)">
+                          <span tal:replace="python:toPortalTime(date)" />
+                          </tal:other>
+                    </div>
+                    <div class="info">
+                         <span tal:omit-tag="" i18n:translate="" tal:content="ptype" /> <span tal:replace="python:scfinfo[0]" />
+                    </div>
+                </div>
+
+                <div><strong><a href="#" tal:attributes="href url">
+                    <span tal:replace="ob/Title|ob/title|string:no Title">Title</span></a></strong>
+                </div>
+
+                <p><span tal:content="structure descr" />
+                <tal:publication condition="python:test(ptype=='Publication', 1, 0)">
+                	<span class="info" tal:define="year ob/year|nothing; scope ob/scope|nothing"
+                	     tal:condition="python:year or scope"><br />(<tal:block
+                	     tal:omit-tag="" tal:condition="year"><span tal:replace="year" /></tal:block><tal:block
+                	     condition="python:year and scope">, </tal:block><span tal:condition="scope" tal:replace="scope" />)</span>
+                </tal:publication>
+                </p>
+
+            </div>
+
+        </tal:block>
+
+      </tal:results>
+    </metal:block>
+
+    <div metal:use-macro="here/document_byline/macros/byline">
+      Get the byline - contains details about author and modification date.
+    </div>
+
+</div>
+
+</body>
+
+</html>
+
+
+

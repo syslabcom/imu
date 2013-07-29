@@ -1,0 +1,75 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<body tal:define="Iterator python:modules['Products.CMFPlone'].IndexIterator;
+                  tabindex python:Iterator()">
+
+<!-- The search box -->
+
+<div metal:define-macro="portlet">
+
+    <div class="portlet"
+         tal:define="folder python:test(here.isPrincipiaFolderish, here, here.aq_parent);
+         itemtype python:folder.getTypeInfo().Title()"
+         id="portlet-search">
+
+        <strong class="portletHeader" i18n:translate="">Search</strong>
+
+        <div class="portletBody">
+
+            <div class="portletContent">
+                <form action="search"
+                      name="portlet_searchform"
+                      method="post"
+                      tal:attributes="action string:${portal_url}/search">
+
+                    <div style="position: static; width: auto; text-align: right">
+                        <div style="float: left; padding: 0; margin: 0;position: relative; width: auto">
+                            <label for="SearchableText" class="hiddenStructure" i18n:translate="label_search_text">Search Text</label>
+                            <input type="text"
+                                id="SearchableText"
+                                   name="SearchableText"
+                                   size="14"
+                                   tabindex=""
+                                   tal:attributes="value SearchableText|request/SearchableText|nothing;
+                                   tabindex tabindex/next;"
+                                   /> 
+                        </div>
+                        <input class="searchButton"
+                               style="float: none;position: relative; width: auto"
+                               type="submit"
+                               value="Go"
+                               tal:attributes="tabindex tabindex/next" />
+                        
+                    </div>
+                    <div tal:define="cfinfo python:here.getFirstParent(city=1);
+                         cfpath python:cfinfo[2]"
+                         tal:condition="python:cfinfo[2]"
+                         i18n:domain="elevateIT" style="clear: both">
+                        <input type="checkbox" 
+                                   id="folderpath"
+                                   name="path"
+                                   tabindex="" class="noborder"
+                                   tal:attributes="tabindex tabindex/next;
+                                   value string:${utool/getPortalPath}/$cfpath;"
+                                   />
+                        <label style="font-weight:normal" for="folderpath" i18n:translate="label_search_local">search only in <span i18n:name="foldername" tal:content="folder/title_or_id" tal:omit-tag="" /></label>
+                    </div>
+                    
+                </form>
+            </div>
+
+            <div class="portletContent separated">
+                <a href="" class="link" i18n:translate="" i18n:domain="elevateIT"
+                    tal:attributes="href string:$portal_url/search_form">advanced search</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

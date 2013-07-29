@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+<body>
+
+          
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+            tal:define="text here/Text | here/text ;
+            title here/Title;
+            itemtype python:here.getTypeInfo().Title();
+            mp_info here/getMultipageElems;
+            is_mp python:test(len(mp_info['elems'])>1, 1, 0);
+            len_text python:len(text);
+            di here/getDefaultImage|string:"
+            class="documentView">
+            
+    <div metal:use-macro="here/content_languagechooser/macros/language_chooser_view" />
+         
+    <h1 tal:content="python:here.title_or_id()" class="documentFirstHeading">
+      Title or id
+    </h1>
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+
+    <tal:block tal:condition="is_mp">
+       <div metal:use-macro="here/multipage_nav/macros/nav_top" />
+    </tal:block>
+    
+    <tal:block tal:define="defimage python:getattr(here, di, '')"
+        tal:condition="defimage/id" tal:on-error="nothing">
+        <div class="image" tal:define="imgtitle defimage/title_or_id|nothing;
+             imgwidth defimage/width|string:auto"
+             tal:attributes="style python:'width:'+str(imgwidth)+'px'">
+
+            <img alt="" src="folder.gif"
+                 tal:attributes="src python:defimage.absolute_url();
+                 title imgtitle;
+                 alt imgtitle" />
+            <div class="info" tal:content="defimage/Title|string:"></div>
+        </div>
+   
+    </tal:block>
+        
+    <div id="bodyContent" 
+     class="stx"
+     tal:condition="len_text"
+     tal:attributes="class python:test(here.text_format=='structured-text', 'stx', 'plain')">
+    <div tal:replace="structure python:here.CookedBody()" tal:on-error="string:this page contains errors"  />
+    </div>
+    <br style="clear: both;" />
+    
+    <div metal:use-macro="here/document_byline/macros/byline">
+      Get the byline - contains details about author and modification date.
+    </div>
+    
+    <tal:block tal:condition="is_mp">
+       <div metal:use-macro="here/multipage_nav/macros/nav_bottom" />
+    </tal:block>
+    
+</div>
+
+</body>
+
+</html>
+

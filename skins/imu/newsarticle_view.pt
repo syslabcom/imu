@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="elevateIT">
+<body>
+
+<div metal:fill-slot="super"
+             tal:define="page string:discussionboard_view;
+             navInfo python:here.getDocumentNavInfo(page=page);
+             board nocall:navInfo/board|nothing;
+             discussion navInfo/discussion;
+             isDiscussionAllowed python:request.get('discussion_allowed', dtool.isDiscussionAllowedFor(here));"
+             tal:condition="python:board"
+             i18n:domain="elevateIT">
+             
+    <div metal:use-macro="here/content_nav/macros/content_nav" />
+</div>
+         
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+            tal:define="text here/Text | here/text ;
+            len_text python:len(here.text);
+            itemtype python:here.getTypeInfo().Title();
+            len_text python:len(text);
+            cinfo python:here.getFirstParent(city=1);
+            toPortalTime nocall:here/toPortalTime;
+            di here/getDefaultImage|string:;
+            elems python:[x for x in here.getFolderListingFolderContents() if x.getId() != di]"
+            class="newsView">
+            
+    <div metal:use-macro="here/content_languagechooser/macros/language_chooser_view" />
+    
+    <div class="headline"><span tal:omit-tag="" i18n:translate="" tal:content="itemtype" /> <span tal:replace="python:cinfo[0]" /></div>
+        
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+    
+    <h1 tal:content="python:here.title_or_id()" class="documentFirstHeading">
+      Title or id
+    </h1>
+    
+    <div class="info" tal:content="python:toPortalTime(here.EffectiveDate(), long_format=0)" />
+    
+    <p class="intro" 
+       tal:condition="here/Description|nothing"
+       tal:content="structure here/Description|nothing">description
+    </p>
+    
+    <tal:block tal:define="defimage python:getattr(here, di, '')"
+               tal:condition="defimage/id" tal:on-error="nothing">
+        <div class="image" tal:define="imgtitle defimage/title_or_id|nothing;
+             imgwidth defimage/width|string:auto"
+             tal:attributes="style python:'width:'+str(imgwidth)+'px'">
+
+            <img alt="" src="folder.gif"
+                 tal:attributes="src python:defimage.absolute_url();
+                 title imgtitle;
+                 alt imgtitle" />
+            <div class="info" tal:content="defimage/title_or_id|nothing"></div>
+        </div>
+   
+    </tal:block>
+    
+    <div class="stx"
+         tal:condition="len_text"
+         tal:omit-tag="python:here.text_format != 'structured-text'">
+        <div tal:replace="structure here/CookedBody" tal:on-error="string:this page contains errors"  />
+    </div>
+    <br style="clear: both" />
+    
+    <metal:attachments use-macro="here/attachmentBox/macros/attachmentBox" />
+    <div style="margin: 1.5em 0em" class="listingBar bottomBar">
+        <a style="float: left" href="javascript: history.back()"><span class="previous" tal:omit-tag="" i18n:translate="mp_back">Back</span></a>
+    </div>
+</div>
+
+</body>
+
+</html>
+

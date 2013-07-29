@@ -1,0 +1,136 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      i18n:domain="plone">
+
+<body>
+
+<!-- a floating language chooser -->
+
+<div metal:define-macro="language_chooser" tal:omit-tag="" tal:content="nothing" />
+
+<!-- box for copying existing content of other language versions -->
+
+<div metal:define-macro="language_copy"
+     tal:define="translated_versions python:here.portal_utilities.getMergedLanguages(here)[0];
+     current_language python:here.portal_languages.getPreferredLanguage();
+     served_languages here/portal_languages/listSupportedLanguages"
+     tal:condition="python:hasattr(here.aq_explicit, 'get_default_language') and len(translated_versions)>0 and len(served_languages)>1"
+     class="languageFloater">
+
+    <div i18n:domain="plone" 
+    i18n:translate="label_language_copy">For translators: Copy the existing text of another language into this language version:</div>
+    
+        <span tal:condition="python:len(translated_versions)==1 
+        and translated_versions[0][0]==current_language" 
+        class="info">No other language versions available.</span>
+             
+        
+     <span tal:condition="python:len(translated_versions)>1 or translated_versions[0][0]!=current_language">   
+    <form name="copy_lang_form"
+        action="object_copy_lang"
+        method="post"
+        enctype="multipart/form-data"
+        tal:attributes="action string:${here/absolute_url}/object_copy_lang">
+       
+      
+        <select name="source_language">
+        <metal:block tal:repeat="version translated_versions">
+             <option tal:content="python:version[1]" 
+             tal:attributes="value python:version[0]"
+             tal:condition="python:version[0]!=current_language"></option>
+        </metal:block>
+        </select>
+        
+         <input class="context"
+             tabindex=""
+             type="submit"
+             name="form.button.Copy"
+             value="Copy"
+             i18n:attributes="value"
+             tal:attributes="tabindex tabindex/next;" />
+             
+        <input type="hidden" name="template_id" value="." tal:attributes="value string:${template/getId}"/>
+        <input type="hidden" name="current_language" value="." tal:attributes="value here/portal_languages/getPreferredLanguage"/>
+               
+       </form>
+       </span>
+       
+</div>
+
+
+<!-- box for deleting existing content of a language version and setting the default language -->
+
+<div metal:define-macro="language_delete"
+     tal:define="translated_versions python:here.portal_utilities.getMergedLanguages(here)[0];
+     translated_versions_short python:[ x[0] for x in translated_versions];
+     current_language python:here.portal_languages.getPreferredLanguage();
+     served_languages here/portal_languages/listSupportedLanguages;
+     getNameForLanguageCode nocall:here/portal_languages/getNameForLanguageCode;
+     default_language here/get_default_language"
+     tal:condition="python: member.has_permission('Modify portal content', here)"
+     class="languageFloater">
+          
+   <span  tal:condition="python:current_language in translated_versions_short and current_language!=default_language">
+     
+    <div i18n:domain="plone" class="field"
+        i18n:translate="label_language_delete">Delete this language version (<span i18n:name="current_language"><span i18n:translate="" tal:content="python:getNameForLanguageCode(current_language)">current_languager</span></span>)</div>
+        
+            <form name="delete_lang_form" 
+                action="object_delete_lang"
+                method="post"
+                enctype="multipart/form-data"
+                tal:attributes="action string:${here/absolute_url}/object_delete_lang">
+            
+                <input type="hidden" name="source_language" value="" tal:attributes="value current_language"/>
+            
+                <input class="context"
+                    tabindex=""
+                    type="submit"
+                    name="form.button.Delete"
+                    value="Delete"
+                    i18n:attributes="value"
+                    tal:attributes="tabindex tabindex/next;" />
+                
+                <input type="hidden" name="template_id" value="." tal:attributes="value string:${template/getId}"/>
+                <input type="hidden" name="current_language" value="." tal:attributes="value here/portal_languages/getPreferredLanguage"/>
+                
+            </form>     
+   </span>
+   
+   <div tal:condition="python: current_language==default_language" class="field">
+       <span i18n:domain="plone" i18n:translate="label_language_is_default">This language (<span i18n:name="current_language"><span i18n:translate="" tal:content="python:getNameForLanguageCode(current_language)">current_language</span></span>) is the default language of this object. It can not be deleted.</span>
+   </div>
+   
+   <div tal:condition="python: current_language!=default_language"  class="field">
+   
+   <span i18n:domain="plone" i18n:translate="label_language_change_default">Make this language (<span i18n:name="current_language"><span i18n:translate="" tal:content="python:getNameForLanguageCode(current_language)">current_language</span></span>) the default language of this object. The current default language is <span i18n:name="default_language"><span i18n:translate="" tal:content="python:getNameForLanguageCode(default_language)">current_language</span></span>.</span>
+   
+       <form name="delete_lang_form"
+            action="object_change_default_lang"
+            method="post"
+            enctype="multipart/form-data"
+            tal:attributes="action string:${here/absolute_url}/object_change_default_lang">
+            
+            <input type="hidden" name="source_language" value="" tal:attributes="value current_language"/>
+
+            <input class="context"
+                tabindex=""
+                type="submit"
+                name="form.button.ChangeDefault"
+                value="Change default language"
+                i18n:domain="plone"
+                i18n:attributes="value"
+                tal:attributes="tabindex tabindex/next;" />                
+                    
+        <input type="hidden" name="template_id" value="." tal:attributes="value string:${template/getId}"/>
+
+        </form>            
+   
+   </div>
+     
+</div>     
+
+<!-- messagebox (given content does not exist in this language) -->
+
+<div metal:define-macro="language_chooser_view" tal:omit-tag="" tal:content="nothing" />
+</body>
+</html>

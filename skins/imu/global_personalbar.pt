@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      i18n:domain="elevateIT">
+
+<body>
+
+<!-- THE PERSONAL BAR DEFINITION -->
+
+<div metal:define-macro="personal_bar"
+      tal:define="portal_url portal_url|here/portal_url;
+                  user_actions user_actions|actions/user;
+                  global_actions global_actions|actions/global;
+                  mtool mtool|here/portal_membership;
+                  display_actions python:user_actions[:-1]+global_actions+user_actions[-1:];"
+                  i18n:domain="plone"
+      id="portal-personaltools">
+
+<strong class="hiddenStructure" i18n:translate="heading_personal_tools">Personal tools</strong>
+
+<div class="contentInfo"><span tal:condition="not: isAnon" 
+        tal:replace="structure python:here.displayNameLink().upper()">User</span>
+
+    <span tal:condition="isAnon" 
+          i18n:domain="elevateIT" i18n:translate="label_login_for_more_services">
+              Log in for more services</span>
+</div>
+
+<ul>
+    <tal:actions tal:repeat="action python:here.getOrderedUserActions(keyed_actions=keyed_actions)">
+        <li tal:attributes="class python:test(repeat['action'].end, 'lastitem', 'plain')"><a href=""
+               tal:attributes="href action/url"
+               accesskey="accesskeys-personalbar"
+               i18n:domain="plone"
+               i18n:attributes="accesskey">
+               <tal:actionname i18n:translate="" tal:content="action/name"
+               i18n:domain="elevateIT">dummy</tal:actionname>
+            </a></li>
+    </tal:actions>
+
+</ul>
+</div>
+
+</body>
+</html>

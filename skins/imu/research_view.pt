@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+<body>
+
+
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+            tal:define="text here/Text | here/text ;
+            itemtype python:here.getTypeInfo().Title();
+            len_text python:len(text);
+            cinfo python:here.getFirstParent(city=1);
+            partner here/Partner|string:;
+            financier here/Financier|string:;
+            mandant here/mandant|string:;
+            manager here/manager|string:;
+            projecttype here/projecttype|string:;
+            startdate here/start_date|string:;
+            enddate here/end_date|string:;
+            di here/getDefaultImage|string:;
+            elems python:[x for x in here.getFolderListingFolderContents() if x.getId() != di]"
+            class="newsView">
+
+
+    <div metal:use-macro="here/content_languagechooser/macros/language_chooser_view" />
+
+    <div class="headline"><span tal:omit-tag="" i18n:translate="" tal:content="itemtype" /> <span tal:replace="python:cinfo[0]" /></div>
+
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+
+
+
+    <tal:block tal:define="defimage python:getattr(here, di, '')"
+               tal:condition="defimage/id" tal:on-error="nothing">
+        <div class="image" tal:define="imgtitle defimage/title_or_id|nothing;
+             imgwidth defimage/width|string:auto"
+             tal:attributes="style python:'width:'+str(imgwidth)+'px'">
+
+            <img alt="" src="folder.gif"
+                 tal:attributes="src python:defimage.absolute_url();
+                 title imgtitle;
+                 alt imgtitle" />
+            <div class="info" tal:content="defimage/Title|string:"></div>
+        </div>
+
+    </tal:block>
+    <h1 tal:content="here/Title|here/title_or_id" class="documentFirstHeading">
+      Title or id
+    </h1>
+    
+    <p class="intro"
+       tal:condition="here/Description|nothing"
+       tal:content="structure here/Description|nothing">description
+    </p>
+
+    <table cellpadding="0" cellspacing="0" border="0"
+       summary="Layout table"
+       i18n:attributes="summary" width="100%"
+       class="infotable">
+       <tr tal:condition="financier">
+           <th><span tal:omit-tag="" i18n:translate="label_financier">Financier</span>:</th>
+           <td ><span tal:replace="structure financier" /></td>
+       </tr>
+       <tr tal:condition="mandant">
+           <th><span tal:omit-tag="" tal:condition="mandant"><span tal:omit-tag="" i18n:translate="label_mandant">Mandant</span>:</span></th>
+           <td width="90%" i18n:translate="" tal:content="python:here.getMandants()[mandant]" tal:on-error="mandant" />
+       </tr>
+       <tr tal:condition="manager">
+           <th><span tal:omit-tag="" tal:condition="manager"><span tal:omit-tag="" i18n:translate="label_manager">Manager</span>:</span></th>
+           <td width="90%" tal:content="structure manager" />
+       </tr>
+       <tr tal:condition="partner">
+           <th><span tal:omit-tag="" i18n:translate="label_partner">Partner</span>:</th>
+           <td width="90%" tal:content="structure partner" />
+       </tr>
+       <tr tal:condition="projecttype">
+           <th><span tal:omit-tag="" i18n:translate="label_projecttype">Projecttype</span>:</th>
+           <td width="90%" i18n:translate="" tal:content="projecttype" />
+       </tr>
+       <tr tal:condition="python:startdate or enddate">
+           <th><span tal:omit-tag="" i18n:translate="label_period">Period</span>:</th>
+           <td width="90%"><span tal:omit-tag="" i18n:translate="timeperiod_from_to"><span
+           i18n:name="from" tal:condition="python:startdate and startdate!=None"><span i18n:translate="" i18n:domain="plone"
+                            tal:content="python:startdate.strftime('%B')" /> <span tal:content="python:startdate.strftime('%Y')" /></span> to <span
+           i18n:name="to" tal:condition="python:enddate and enddate!=None"><span i18n:translate="" i18n:domain="plone"
+                            tal:content="python:enddate.strftime('%B')" /> <span tal:content="python:enddate.strftime('%Y')" /></span></span></td>
+       </tr>
+    </table>
+
+    <div class="headline" tal:condition="len_text"><span tal:omit-tag="" i18n:translate="">Content</span>:</div>
+    <div id="bodyContent"
+         class="stx"
+         tal:condition="len_text"
+         tal:attributes="class python:test(here.text_format=='structured-text', 'stx', 'plain')">
+        <div tal:replace="structure python:here.CookedBody()"
+             tal:on-error="string:this page contains errors"  />
+    </div>
+
+    <metal:attachments use-macro="here/attachmentBox/macros/attachmentBox" />
+
+    <div metal:use-macro="here/document_byline/macros/byline">
+      Get the byline - contains details about author and modification date.
+    </div>
+    <div style="margin: 1.5em 0em" class="listingBar bottomBar">
+        <a style="float: left" href="javascript: history.back()"><span class="previous" tal:omit-tag="" i18n:translate="mp_back">Back</span></a>
+    </div>
+</div>
+
+</body>
+
+</html>
+
+

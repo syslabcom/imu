@@ -1,0 +1,260 @@
+# ----------------------- COPY IMU HERE ---------------------------
+
+# Fix help_search_text:
+
+msgid "help_search_text"
+msgstr "Für eine einfache Textsuche geben Sie hier Ihren Suchbegriff ein. Sie können nach mehreren Wörtern gleichzeitig suchen, indem Sie sie mit <strong>AND</strong> und <strong>OR</strong> verknüpfen. Dokumentinhalte, Titel und Beschreibungen werden auf die im Suchfeld angegebenen Begriffe durchsucht."
+
+# ----------------------- Research --------------------------------
+
+msgid "Research"
+msgstr "Forschung"
+
+msgid "description_edit_research"
+msgstr "Geben Sie die Details zu diesem Forschungsprojekt ein."
+
+msgid "legend_research_details"
+msgstr "Forschungsprojekt Details"
+
+msgid "label_mandant"
+msgstr "Auftragnehmer"
+
+msgid "label_projectnumber"
+msgstr "Projektnummer"
+
+msgid "label_projecttype"
+msgstr "Projektart"
+
+msgid "label_manager"
+msgstr "Bearbeiter"
+
+msgid "label_partner"
+msgstr "Partner/Auftraggeber"
+
+msgid "label_topic"
+msgstr "Thema"
+
+msgid "label_start"
+msgstr "Beginn"
+
+msgid "label_end"
+msgstr "Ende"
+
+msgid "label_period"
+msgstr "Zeitraum"
+
+msgid "Seminar"
+msgstr "Seminar"
+
+msgid "description_edit_seminar"
+msgstr "Geben Sie die Details zu diesem Seminar ein."
+
+msgid "legend_seminar_details"
+msgstr "Seminardetails"
+
+msgid "timeperiod_from_to"
+msgstr "${from} bis ${to}"
+
+msgid "label_host"
+msgstr "Veranstalter"
+
+msgid "label_location"
+msgstr "Ort"
+
+msgid "label_search_local"
+msgstr "nur in ${foldername}"
+
+msgid "advanced search"
+msgstr "erweiterte Suche"
+
+msgid "mp_back"
+msgstr "zurück"
+
+msgid "mp_forward"
+msgstr "weiter"
+
+msgid "More Information"
+msgstr "Weitere Informationen"
+
+msgid "Content"
+msgstr "Inhalt"
+
+msgid "Filesize"
+msgstr "Dateigrösse"
+
+# ---------------- Publication ---------------------------
+
+msgid "Publication"
+msgstr "Veröffentlichung"
+
+msgid "legend_publication_details"
+msgstr "Details der Veröffentlichung"
+
+msgid "description_edit_publication"
+msgstr "Geben Sie die Details der Veröffentlichung ein."
+
+msgid "label_imu_author"
+msgstr "Von"
+
+msgid "label_subtitle"
+msgstr "Untertitel"
+
+msgid "label_series"
+msgstr "Reihe"
+
+msgid "label_published"
+msgstr "Erschienen"
+
+msgid "label_imu_publisher"
+msgstr "Herausgeber"
+
+msgid "label_number"
+msgstr "Nummer"
+
+msgid "label_pcompany"
+msgstr "Verlag"
+
+msgid "label_year"
+msgstr "Jahr"
+
+msgid "label_price"
+msgstr "Preis"
+
+msgid "label_source"
+msgstr "Bezug über"
+
+# ---------------- Consulting ---------------------------
+
+msgid "Consulting"
+msgstr "Beratung"
+
+msgid "legend_consulting_details"
+msgstr "Details der Beratung"
+
+msgid "description_edit_consulting"
+msgstr "Geben Sie die Details zum Beratungsfall ein."
+
+msgid "label_client"
+msgstr "Klient"
+
+# ---------------- Upload projects ---------------------------
+
+msgid "heading_upload_research"
+msgstr "Forschungsprojekte in Ordner ${foldername} hochladen"
+
+msgid "description_upload_research"
+msgstr "Hier können Sie den Export einer Datenbank als cvs Datei hochladen und daraus Objekte vom Typ Forschung generieren. <br />Achtung: bereits bestehende Objekte werden ersetzt!"
+
+msgid "legend_upload_details"
+msgstr "Details zu Upload"
+
+msgid "Upload"
+msgstr "Hochladen"
+
+msgid "Upload research"
+msgstr "Projekte hochladen"
+
+msgid "heading_upload_research_feedback"
+msgstr "Ergebnis: Forschungsprojekte in Ordner ${foldername} hochladen"
+
+msgid "description_upload_research_feedback_success"
+msgstr "Der Upload der Forschungsprojekte war erfolgreich.<br /> Die folgenden Objekte vom Typ Forschung wurden geändert:"
+
+msgid "description_upload_research_feedback_failure"
+msgstr "Keine Objekte vom Typ Forschung wurden geändert."
+
+msgid "label_message"
+msgstr "Meldung"
+
+msgid "created"
+msgstr "erstellt"
+
+msgid "updated"
+msgstr "aktualisiert"
+
+msgid "error"
+msgstr "fehler"
+
+msgid "label_shorttitle"
+msgstr "Kurztitel"
+
+msgid "label_projectid"
+msgstr "Projekt ID"
+
+msgid "Begin"
+msgstr "Beginn"
+
+msgid "End"
+msgstr "Ende"
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "Week"
+msgstr "Woche"
+
+msgid "Month"
+msgstr "Monat"
+
+msgid "Year"
+msgstr "Jahr"
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saturday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
+
+msgid "Consultings"
+msgstr "Beratungsfälle"
+
+msgid "Seminars"
+msgstr "Seminare"
+
+msgid "Research projects"
+msgstr "Forschungsprojekte"
+
+msgid "Publications"
+msgstr "Veröffentlichungen"
+
+msgid "label_search_for"
+msgstr "Suche nach"
+
+msgid "help_search_for"
+msgstr "Nur nach den jeweiligen Objekttypen suchen"
+
+msgid "label_search_in"
+msgstr "Suche in"
+
+msgid "help_search_in_city"
+msgstr "Nur in der jeweiligen Stadt suchen"
+
+msgid "Send to somebody"
+msgstr "Seite versenden"
+
+msgid "option_manual_input"
+msgstr "(freie Eingabe)"
+
+msgid "label_imu_in"
+msgstr "In"
+
+# ---------------- sendto_template ---------------------------
+
+msgid "sendto_mailtemplate_body"
+msgstr "Sie bekommen diese E-Mail, weil jemand Information auf der Website '${portal_title}' gelesen hat und der Meinung ist, die Seite könnte auch Sie interessieren.\n\nDieser Hinweis wurde Ihnen von ${from_address} mit folgendem Kommentar gesendet:\n'${comment}'\n\nHier der betreffende Link:\n${document_url}\n\n'${document_title}'\n\n${document_description}\n\nDiese Nachricht wurde Ihnen von ${portal_url} aus zugesendet.\n\nMit freundlichen Grüßen,"
+

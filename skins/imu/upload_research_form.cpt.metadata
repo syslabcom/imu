@@ -1,0 +1,14 @@
+[default]
+title=Upload Research
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators..Upload=
+validators..Cancel=
+
+[actions]
+action.success..Upload=traverse_to:string:upload_research
+action.success..Cancel=redirect_to_action:string:view
+action.failure=traverse_to:string:upload_research_form

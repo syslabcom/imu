@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+<body>
+
+          
+<div metal:fill-slot="main" i18n:domain="elevateIT"
+            tal:define="navs python:['navigation', 'navigation_standorte']">
+            
+    <h1 i18n:translate="" class="documentFirstHeading">
+      Sitemap
+    </h1>
+    
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+    
+    <tal:block repeat="nav navs">
+    <tal:block define="navobj python:getattr(portal, nav, '')"
+     tal:condition="nocall:navobj">
+    <div class="portlet"
+     tal:define="nodelist python:navobj.getWeighted(1, validate=1)[0];
+     Iterator python:modules['Products.CMFPlone'].IndexIterator;
+     depth python:0;
+     mtabindex python:Iterator(pos=1)"
+     tal:condition="nodelist">
+    <div class="padding">
+    
+        <strong class="portletHeader" tal:content="navobj/Title|string:Menu"
+            >Navigation Title</strong>     
+            
+        <div class="portletBody">
+            <div class="navigationList">
+
+            <ul metal:define-macro="nav_children" 
+                tal:define="navlist childlist|nodelist;
+                depth python:depth+1"
+                tal:condition="navlist">
+                <metal:block tal:repeat="node navlist">
+                    <li tal:define="childlist python:node.getMenueitems(validate=1)">
+                        
+                        <div tal:define="styleclass python:test(node.hasLine()==1, 'portletContent separated', 'portletContent');
+                            indent python:12 * (depth-1)"
+                             tal:attributes="class styleclass;
+                                             style python:'padding-left:'+ str(indent) +'px'">
+                            
+                            <a href="" tal:define="target nocall:node/getTarget|nothing;
+                               target python:test(target != '', target, '_self')"
+                               accesskey="accesskeys-navigation"
+                               i18n:attributes="accesskey"
+                               tal:attributes="href string:${node/getTargeturl};
+                                   tabindex mtabindex/next;
+                                   target target"
+                               tal:content="node/Title|node/id">node/id</a>
+                        </div>
+        
+                        <div tal:condition="python:len(childlist)>0"
+                                     tal:define="childlist childlist">
+                            <ul metal:use-macro="here/navigation_view/macros/nav_children" />
+                        </div>
+                    </li>
+                </metal:block>
+                
+            </ul>
+            </div>
+        </div>
+    </div>
+        
+    </div>
+    </tal:block>    
+    </tal:block>  
+    
+</div>
+
+</body>
+
+</html>
+
